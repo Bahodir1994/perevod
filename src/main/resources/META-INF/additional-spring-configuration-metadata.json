@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "ASTRA_DB_ID",
+      "type": "java.lang.String",
+      "description": "Description for ASTRA_DB_ID."
+    },
+    {
+      "name": "ASTRA_DB_REGION",
+      "type": "java.lang.String",
+      "description": "Description for ASTRA_DB_REGION."
+    },
+    {
+      "name": "ASTRA_DB_KEYSPACE",
+      "type": "java.lang.String",
+      "description": "Description for ASTRA_DB_KEYSPACE."
+    },
+    {
+      "name": "ASTRA_DB_APPLICATION_TOKEN",
+      "type": "java.lang.String",
+      "description": "Description for ASTRA_DB_APPLICATION_TOKEN."
+    },
+    {
+      "name": "astra.api.keyspace",
+      "type": "java.lang.String",
+      "description": "Description for astra.api.keyspace."
+    }
+  ] }
