@@ -1,0 +1,72 @@
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "create table public.persons (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), email varchar(30), first_name VARCHAR(180) [*]CCSID 1208, last_name VARCHAR(180) CCSID 1208, legal_name VARCHAR(600) CCSID 1208, per_adr VARCHAR(765) CCSID 1208, person_type varchar(1), phone varchar(20), pin varchar(14), sur_name VARCHAR(180) CCSID 1208, tin varchar(9), primary key (id))"; ожидалось "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"
+Syntax error in SQL statement "create table public.persons (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), email varchar(30), first_name VARCHAR(180) [*]CCSID 1208, last_name VARCHAR(180) CCSID 1208, legal_name VARCHAR(600) CCSID 1208, per_adr VARCHAR(765) CCSID 1208, person_type varchar(1), phone varchar(20), pin varchar(14), sur_name VARCHAR(180) CCSID 1208, tin varchar(9), primary key (id))"; expected "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"; SQL statement:
+create table public.persons (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), email varchar(30), first_name VARCHAR(180) CCSID 1208, last_name VARCHAR(180) CCSID 1208, legal_name VARCHAR(600) CCSID 1208, per_adr VARCHAR(765) CCSID 1208, person_type varchar(1), phone varchar(20), pin varchar(14), sur_name VARCHAR(180) CCSID 1208, tin varchar(9), primary key (id)) [42001-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "create table public.urole (id varchar(255) not null, code SMALLINT DEFAULT 0, name VARCHAR(600) [*]CCSID 1208, primary key (id))"; ожидалось "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"
+Syntax error in SQL statement "create table public.urole (id varchar(255) not null, code SMALLINT DEFAULT 0, name VARCHAR(600) [*]CCSID 1208, primary key (id))"; expected "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"; SQL statement:
+create table public.urole (id varchar(255) not null, code SMALLINT DEFAULT 0, name VARCHAR(600) CCSID 1208, primary key (id)) [42001-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "create table public.user_e (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), fullname VARCHAR(300) [*]CCSID 1208, inn VARCHAR(9), lang varchar(255), location VARCHAR(5), locationname VARCHAR(600) CCSID 1208, notification integer, password VARCHAR(100), pnfl VARCHAR(14), post VARCHAR(10), postname VARCHAR(600) CCSID 1208, role SMALLINT DEFAULT 0, userid VARCHAR(50), username VARCHAR(50), primary key (id))"; ожидалось "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"
+Syntax error in SQL statement "create table public.user_e (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), fullname VARCHAR(300) [*]CCSID 1208, inn VARCHAR(9), lang varchar(255), location VARCHAR(5), locationname VARCHAR(600) CCSID 1208, notification integer, password VARCHAR(100), pnfl VARCHAR(14), post VARCHAR(10), postname VARCHAR(600) CCSID 1208, role SMALLINT DEFAULT 0, userid VARCHAR(50), username VARCHAR(50), primary key (id))"; expected "ARRAY, INVISIBLE, VISIBLE, NOT NULL, NULL, AS, DEFAULT, GENERATED, ON UPDATE, NOT NULL, NULL, AUTO_INCREMENT, DEFAULT ON NULL, NULL_TO_DEFAULT, SEQUENCE, SELECTIVITY, COMMENT, CONSTRAINT, COMMENT, PRIMARY KEY, UNIQUE, NOT NULL, NULL, CHECK, REFERENCES, AUTO_INCREMENT, ,, )"; SQL statement:
+create table public.user_e (id VARCHAR(50) not null, instime timestamp default current_timestamp, insuser varchar(50), isdeleted SMALLINT DEFAULT 0, updtime timestamp, upduser varchar(50), fullname VARCHAR(300) CCSID 1208, inn VARCHAR(9), lang varchar(255), location VARCHAR(5), locationname VARCHAR(600) CCSID 1208, notification integer, password VARCHAR(100), pnfl VARCHAR(14), post VARCHAR(10), postname VARCHAR(600) CCSID 1208, role SMALLINT DEFAULT 0, userid VARCHAR(50), username VARCHAR(50), primary key (id)) [42001-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+create index public.IDXemgr2u7ud835pxtighadrsyc4 on public.persons (insuser) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+create index public.IDXgt9x4lgj4ifbmj6g8f5rxy4kd on public.persons (isdeleted) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+alter table public.persons drop constraint if exists UK_ox110nb35vlxm28jlwqnrcxg6 [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+alter table public.persons add constraint UK_ox110nb35vlxm28jlwqnrcxg6 unique (pin) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+alter table public.persons drop constraint if exists UK_gdbbv2j9cliy5wlmnv5070yvm [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "PERSONS" не найдена
+Table "PERSONS" not found; SQL statement:
+alter table public.persons add constraint UK_gdbbv2j9cliy5wlmnv5070yvm unique (tin) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e drop constraint if exists UK_nyok472ub0xchhdvhk46ywstc [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e add constraint UK_nyok472ub0xchhdvhk46ywstc unique (fullname) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e drop constraint if exists UK_1qlnnecvb38tlqgtkjy8wqs7e [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e add constraint UK_1qlnnecvb38tlqgtkjy8wqs7e unique (userid) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e drop constraint if exists UK_piy83tos12qsanlyn8uik8vmf [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table public.user_e add constraint UK_piy83tos12qsanlyn8uik8vmf unique (username) [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "UROLE" не найдена
+Table "UROLE" not found; SQL statement:
+alter table user_e_roles add constraint FKd2w5ayvndyha3hecp4k9mr3hc foreign key (roles_id) references public.urole [42102-214]
+2023-08-21 01:05:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+alter table user_e_roles add constraint FK16cxr6240u27h68bf7mxbsgix foreign key (user_id) references public.user_e on delete cascade [42102-214]
+2023-08-21 01:26:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "USER_E" не найдена
+Table "USER_E" not found; SQL statement:
+select user0_.id as id1_3_, user0_.instime as instime2_3_, user0_.insuser as insuser3_3_, user0_.isdeleted as isdelete4_3_, user0_.updtime as updtime5_3_, user0_.upduser as upduser6_3_, user0_.fullname as fullname7_3_, user0_.inn as inn8_3_, user0_.lang as lang9_3_, user0_.location as locatio10_3_, user0_.locationname as locatio11_3_, user0_.notification as notific12_3_, user0_.password as passwor13_3_, user0_.pnfl as pnfl14_3_, user0_.post as post15_3_, user0_.postname as postnam16_3_, user0_.role as role17_3_, user0_.userid as userid18_3_, user0_.username as usernam19_3_ from public.user_e user0_ where ( user0_.isdeleted = '0') and user0_.username=? [42102-214]

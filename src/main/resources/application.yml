@@ -1,0 +1,20 @@
+server:
+  port: 8766
+  address: 0.0.0.0
+  servlet:
+    session:
+      persistent: false
+      timeout: -1
+    context-path:
+spring:
+  main:
+    allow-circular-references: true
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
