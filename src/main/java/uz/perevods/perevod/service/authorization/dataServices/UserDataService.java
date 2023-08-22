@@ -9,7 +9,7 @@
 //import org.springframework.transaction.annotation.Transactional;
 //import uz.perevods.perevod.component.httpSession.GetterSessionData;
 //import uz.perevods.perevod.component.httpSession.SessionDataValue;
-//import uz.perevods.perevod.entitiy.authorization.User;
+//import uz.perevods.perevod.entitiy.User;
 //import uz.perevods.perevod.repository.authorization.dataRepository.UserDataRepository;
 //
 //import javax.persistence.criteria.CriteriaBuilder;

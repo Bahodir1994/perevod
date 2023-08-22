@@ -12,8 +12,8 @@
 //import uz.perevods.perevod.component.httpSession.SessionData;
 //import uz.perevods.perevod.component.httpSession.SessionDataValue;
 //import uz.perevods.perevod.component.utils.Utils;
-//import uz.perevods.perevod.entitiy.authorization.ActivUserCount;
-//import uz.perevods.perevod.entitiy.authorization.User;
+//import uz.perevods.perevod.entitiy.ActivUserCount;
+//import uz.perevods.perevod.entitiy.User;
 //import uz.perevods.perevod.service.authorization.jpaServices.LogServiceImpl;
 //import uz.perevods.perevod.service.authorization.jpaServices.UserService;
 //

@@ -11,8 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @ServletComponentScan
 @SpringBootApplication
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
-@EnableJpaRepositories(basePackages = "uz.perevods.perevod.repository") // Adjust package name accordingly
 public class PerevodApplication {
 
     public static void main(String[] args) {
