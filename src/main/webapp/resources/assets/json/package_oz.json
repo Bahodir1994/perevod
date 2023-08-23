@@ -1,0 +1,21 @@
+{
+  "emptyTable": "Ma'lumot yo'q",
+  "info": "Umumiy _TOTAL_ ma'l. _START_ dan _END_ gacha",
+  "infoEmpty": "Umumiy 0 ma'l. 0 dan 0 gacha",
+  "infoFiltered": "(Jami _MAX_ ma'lumot)",
+  "lengthMenu": "_MENU_ ta",
+  "loadingRecords": "Ma'lumotlar yuklanmoqda...",
+  "processing": "<span class='fa-stack fa-lg'><i class='fas fa-spinner fa-spin fa-stack-2x fa-fw'></i></span>&nbsp;Yuklanmoqda...",
+  "search": "Izlash:",
+  "zeroRecords": "Ma'lumot yo'q.",
+  "paginate": {
+    "first": "Birinchi",
+    "previous": "Avvalgi",
+    "next": "Keyingi",
+    "last": "Son'ggi"
+  },
+  "aria": {
+    "sortAscending": ": to'g'ri tartiblash",
+    "sortDescending": ": teskari tartiblash"
+  }
+} 

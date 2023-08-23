@@ -46,4 +46,7 @@ public class TotalMoney extends AbstractAuditingEntity {
 
     @Column(name = "ins_locationName", length = 50)
     private String insLocationName;
+
+    @Column(name = "status", length = 5)
+    private String status;
 }

@@ -25,6 +25,12 @@ public class Users {
 
     private String password;
 
+    @Column(name = "location_code", length = 50)
+    private String locationCode;
+
+    @Column(name = "location_name", length = 50)
+    private String locationName;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
 }

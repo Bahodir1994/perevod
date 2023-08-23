@@ -19,9 +19,9 @@ import java.util.List;
 public class DataController1 {
     private final AppService1 appService1;
 
+
     @GetMapping("/dataV1")
     public DataTablesOutput<TransactionalMoney> home(DataTablesInput tablesInput, HttpServletRequest request){
-
         return appService1.getData1(tablesInput, request);
     }
 }

@@ -54,15 +54,15 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Column(name = "phone", length = 20)
     private String phone;
 
-    @Column(name = "in_time")
+    @Column(name = "in_time", columnDefinition = "timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date inTime;
 
-    @Column(name = "out_time")
+    @Column(name = "out_time", columnDefinition = "timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date outTime;
 
-    @Column(name = "debt", length = 5, columnDefinition = "DEFAULT 0")
+    @Column(name = "debt", length = 3, columnDefinition = "VARCHAR DEFAULT 0")
     private String debt;
 
     @Column(name = "comment", length = 600)

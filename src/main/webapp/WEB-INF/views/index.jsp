@@ -19,13 +19,16 @@
     <meta name="generator" content="Hugo 0.115.4">
     <title>Fixed top navbar example · Bootstrap v5.3</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/navbar-fixed/">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-<%--    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/jquery.dataTables.min.css" rel="stylesheet">--%>
-    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/navbar-fixed.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/resources/assets/css/app.css">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/responsive.bootstrap4.min.css" rel="stylesheet">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/fixedHeader.bootstrap4.min.css" rel="stylesheet">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/select.dataTables.min.css" rel="stylesheet">
 
     <style>
         .bd-placeholder-img {
@@ -100,9 +103,15 @@
             z-index: 1500;
         }
 
+        .table.dataTable[class*="table-"] thead th {
+            background: rgba(60, 148, 232, 0.66) !important;
+            height: 5px !important;
+            vertical-align: middle!important;
+            color: #000!important;
+            font-size: 14px!important;
+        }
+
     </style>
-    <!-- Custom styles for this template -->
-    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/navbar-fixed.css" rel="stylesheet">
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -120,7 +129,6 @@
         <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
     </symbol>
 </svg>
-
 <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
     <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
             id="bd-theme"
@@ -156,7 +164,6 @@
     </ul>
 </div>
 
-
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Pul o'tkazma</a>
@@ -183,201 +190,43 @@
     </div>
 </nav>
 
-<main class="container">
-    <div class="row g-5">
-        <div class="col-md-5 col-lg-4 order-md-last">
-            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-primary">Xisob raqam</span>
-                <span class="text-danger">Qarz <span class="badge bg-primary rounded-pill">3</span></span>
-            </h4>
-            <ul class="list-group mb-3">
-                <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0 text-warning">Xisobda mavjud</h6>
-                        <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
-                    </div>
-                    <span class="text-body-secondary">55 000 000</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0 text-warning">Aylanma mablag'</h6>
-                        <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
-                    </div>
-                    <span class="text-body-secondary">24 000 000</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between lh-sm">
-                    <div>
-                        <h6 class="my-0 text-success">Xisobda mavjud</h6>
-                        <small class="text-body-secondary">(USD) Aqsh dollari</small>
-                    </div>
-                    <span class="text-body-secondary text-success">8 000</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <div class="text-success">
-                        <h6 class="my-0">Aylanma mablag'</h6>
-                        <small>(USD) Aqsh dollari</small>
-                    </div>
-                    <span class="text-success">5 000</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <div>
-                        <h6 class="my-0 text-success">Kunlik start:</h6>
-                    </div>
-                    <span>
-                        <strong>70 000 000 000 (UZS)</strong>
-                    </span>
-
-                    <span>
-                        <strong>18 000 (USD)</strong>
-                    </span>
-                </li>
-            </ul>
-
-            <form class="d-flex justify-content-between p-2">
-                    <button type="submit" class="btn btn-secondary w-100 mx-2">Calculator</button>
-                    <button type="submit" class="btn btn-secondary w-100 mx-2">Ishni yakunlash</button>
-            </form>
-        </div>
-        <div class="col-md-7 col-lg-8">
-            <h4 class="mb-3">Tranzaksiya</h4>
-            <form class="needs-validation" novalidate>
-                <div class="row g-3">
-                    <div class="col-sm-6">
-                        <label for="fullName" class="form-label">F.I.O</label>
-                        <input type="text" class="form-control fullName" id="fullName" required>
-                        <div class="invalid-feedback">
-                            F.I.O to'ldirilmagan!
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label for="telNumber" class="form-label">Tel.</label>
-                        <input type="text" class="form-control telNumber" id="telNumber" required>
-                        <div class="invalid-feedback">
-                            Tel raqam to'ldirilmagan!
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label for="moneyCost" class="form-label">Tranzaksiya miqdori</label>
-                        <div class="input-group has-validation">
-                            <span class="input-group-text currencyIcon">@</span>
-                            <input type="text" class="form-control currency-mask moneyCost" id="moneyCost" required>
-                            <div class="invalid-feedback">
-                                Qiymat kiritilmagan!
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <label for="moneyType" class="form-label">Valyuta</label>
-                        <select class="form-select moneyType" id="moneyType" required>
-                            <option value="uzs">So'm (uzs)</option>
-                            <option value="usd">Dollar (usd)</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Valyuta tanlanmagan!
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label for="serviceMoney" class="form-label">Xizmat uchun</label>
-                        <div class="input-group has-validation">
-                            <span class="input-group-text">uzs</span>
-                            <input type="text" class="form-control currency-mask serviceMoney" id="serviceMoney" required>
-                            <div class="invalid-feedback">
-                                Xizmat puli to'ldirilmagan!
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label for="sendToAddress" class="form-label">Jo'natma manzili</label>
-                        <select class="form-select sendToAddress" id="sendToAddress" required>
-                            <option value="01-toshkent">Toshkent</option>
-                            <option value="95-mangit">Mangit</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Jo'natma manzili tanlanmagan!
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="comment" class="form-label comment">Izox</label>
-                        <input type="text" class="form-control" id="comment">
-                    </div>
-
-                </div>
-
-                <div class="row py-2">
-                    <div class="col-sm-6">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input isDebt" id="isDebt">
-                            <label class="form-check-label" for="isDebt">Qarzga berilmoqda</label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <button class="btn btn-primary w-75" type="submit">Saqlash</button>
-                    </div>
-                </div>
-                <hr class="my-2">
-            </form>
-        </div>
-    </div>
-    <div class="">
-        <table id="datatable1" class="table table-striped table-responsive  table-hover" style="width: 100%!important;">
-        </table>
-    </div>
+<main class="container" id="mainApps">
+    <!--Content put here-->
 </main>
 <script src="${pageContext.servletContext.contextPath}/resources/assets/js/color-modes.js"></script>
 <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery-3.7.0.js"></script>
+
 <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery.dataTables.min.js"></script>
-<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.bootstrap4.min.js"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.responsive.min.js"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.fixedHeader.min.js"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.colReorder.min.js"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.select.min.js"></script>
+
 <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery.spring-friendly.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="${pageContext.servletContext.contextPath}/resources/assets/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="${pageContext.servletContext.contextPath}/resources/assets/data/imask/dist/imask.js"></script>
 <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
 <script>
     $(document).ready(function () {
+        app_funcV1_01();
     })
 
-
-    var dt1 = $('#datatable1').DataTable({
-        // retrieve: false,
-        // deferLoading: true,
-        paging: true,
-        scrollCollapse: true,
-        processing: true,
-        responsive: true,
-        ajax: {
-            url: '${pageContext.servletContext.contextPath}/route_v1/dataV1',
-            type: 'GET'
-        },
-        lengthMenu: [
-            [10, 25, 50, -1],
-            [10, 25, 50, 'Xammasi']
-        ],
-        serverSide: true,
-        dom: '<"row"<"col-md-12 d-flex justify-content-center"f>>' +
-            '<"row"<"col-sm-12"t>>' +
-            '<"row"<"col-sm-12 d-flex justify-content-center"pr>>' +
-            '<"row"<"col-sm-3 mt-2"l><"col-sm-9 text-end mt-2"i>>',
-        lengthMenu: [[10, 50, 100, -1], [10, 50, 100, 'Барчаси']],
-        columns: [
-            {title: '№', className: 'text-center', sortable: false, searchable: false, orderable: false, name: 'column0', data: null, render: function (data, type, row, meta) {return meta.row + meta.settings._iDisplayStart + 1 +'.'}},
-            {title: 'F.I.O', className: 'text-left', name: 'column1', data: 'fullName'},
-            {title: 'Summa', className: 'text-center', name: 'column2', data: 'id', render: (_, __, row) => {
-                    return row.paymentCost + ' (' + row.paymentCostType + ')'
-            }},
-            {title: 'Tel', className: 'text-left', name: 'column3', data: 'phone'},
-            {title: 'Jo\'natilgan vaqt', className: 'text-left', name: 'column4', data: 'outTime'},
-            {title: 'Qabul qilingan vaqt', className: 'text-left', name: 'column5', data: 'inTime'},
-            {title: 'Qarzdor', className: 'text-left', name: 'column6', data: 'debt'},
-            {title: 'Xizmat', className: 'text-left', name: 'column6', data: 'serviceUzs'},
-            {title: 'Izox', className: 'text-left', name: 'column6', data: 'comment'},
-        ],
-        language: {url: '${pageContext.servletContext.contextPath}/resources/assets/json/package_uz.json'},
-    });
+    function app_funcV1_01() {
+        $.ajax({
+            type: "GET",
+            url: "${pageContext.servletContext.contextPath}/route_v1/data_v1/job_status",
+            beforeSend: function () {
+            },
+            accept: function () {
+            },
+            success: function (response) {
+                $("#mainApps").html(response);
+            },
+            error: function () {
+            }
+        });
+    }
 </script>
 </body>
 </html>
