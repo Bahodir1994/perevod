@@ -164,7 +164,7 @@
     </ul>
 </div>
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark border-dark-subtle shadow">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Pul o'tkazma</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

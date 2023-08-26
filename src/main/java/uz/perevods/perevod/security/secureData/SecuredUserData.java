@@ -17,12 +17,8 @@ import javax.persistence.criteria.Fetch;
 public class SecuredUserData {
     private final CustomUserDetailsService customUserDetailsService;
 
-    public Users getSecuredUserParams(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-//        Specification<Users> specification = (root, query, criteriaBuilder) -> {
-//            Fetch<Users>
-//        }
+    public Users getSecuredUserParams(UserDetails userDetails){
+        String username = userDetails.getUsername();
         return customUserDetailsService.getUser(username);
     }
 }

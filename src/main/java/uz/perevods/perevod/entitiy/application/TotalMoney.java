@@ -7,10 +7,12 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.data.annotation.CreatedDate;
 import uz.perevods.perevod.component.entityComponents.AbstractAuditingEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +35,7 @@ public class TotalMoney extends AbstractAuditingEntity {
 
     @OneToMany(mappedBy = "totalMoney", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<TransactionalMoney> transactionalMoneyList;
+    private Set<TransactionalMoney> transactionalMoneyList;
 
     @Column(name = "total_uzs", length = 50)
     private BigDecimal totalUzs;
@@ -47,6 +49,15 @@ public class TotalMoney extends AbstractAuditingEntity {
     @Column(name = "ins_locationName", length = 50)
     private String insLocationName;
 
-    @Column(name = "status", length = 5)
-    private String status;
+    @Column(name = "status", length = 5, columnDefinition = "DEFAULT 0")
+    private String status; /*0-not start; 1-started, 2-finished*/
+
+    @Column(name = "start_time", columnDefinition = "timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
+
+    @Column(name = "finish_time", columnDefinition = "timestamp")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date finishTime;
+
 }
