@@ -53,11 +53,8 @@ setInterval(time, 1000);
 
 
 function formatNumberWithThousandsSeparator(number) {
-    var parts = number.toFixed(3).split(".");
-    var integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    var formattedNumber = integerPart + "." + parts[1];
-
-    return formattedNumber;
+    var integerPart = Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return integerPart;
 }
 
 

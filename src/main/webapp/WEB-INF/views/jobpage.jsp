@@ -18,7 +18,7 @@
     <div class="col-md-5 col-lg-4 order-sm-last">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-primary">Xisob raqam</span>
-        <span class="text-danger">Qarz <span class="badge bg-primary rounded-pill">3</span></span>
+        <span class="text-danger">Qarz <span class="badge bg-primary rounded-pill debtCount">0</span></span>
       </h4>
       <ul class="list-group mb-3">
         <li class="list-group-item d-flex justify-content-between lh-sm">
@@ -26,28 +26,28 @@
             <h6 class="my-0 text-warning">Xisobda mavjud</h6>
             <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
           </div>
-          <span class="text-body-secondary">55 000 000</span>
+          <span class="text-body-secondary totalActiveUzs">0</span>
         </li>
         <li class="list-group-item d-flex justify-content-between lh-sm">
           <div>
-            <h6 class="my-0 text-warning">Aylanma mablag'</h6>
-            <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
-          </div>
-          <span class="text-body-secondary">24 000 000</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-sm">
-          <div>
-            <h6 class="my-0 text-success">Xisobda mavjud</h6>
+            <h6 class="my-0 text-warning">Xisobda mavjud</h6>
             <small class="text-body-secondary">(USD) Aqsh dollari</small>
           </div>
-          <span class="text-body-secondary text-success">8 000</span>
+          <span class="text-body-secondary text-success totalActiveUsd">0</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-sm">
+          <div>
+            <h6 class="my-0 text-success">Aylanma mablag'</h6>
+            <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
+          </div>
+          <span class="text-body-secondary totalActiveUzsUsage">0</span>
         </li>
         <li class="list-group-item d-flex justify-content-between">
           <div class="text-success">
             <h6 class="my-0">Aylanma mablag'</h6>
             <small>(USD) Aqsh dollari</small>
           </div>
-          <span class="text-body-secondary text-success">5 000</span>
+          <span class="text-body-secondary text-success totalActiveUsdUsage">0</span>
         </li>
         <li class="list-group-item d-flex justify-content-between">
           <div class="align-middle">
@@ -55,10 +55,10 @@
           </div>
           <div class="justify-content-between">
             <div>
-              <strong>70 000 000 000 (UZS)</strong>
+              <strong class="moneyDayStartUzs">0 (UZS)</strong>
             </div>
             <div>
-              <strong>18 000 (USD)</strong>
+              <strong class="moneyDayStartUsd">0 (USD)</strong>
             </div>
           </div>
         </li>
@@ -161,6 +161,11 @@
   </table>
 
   <script>
+    $(document).ready(function () {
+        job_start_funcV1_01();
+    })
+  </script>
+  <script>
     var dt1 = $('#datatable1').DataTable({
       // retrieve: false,
       // deferLoading: true,
@@ -171,7 +176,7 @@
       colReorder: true,
       fixedHeader: true,
       ajax: {
-        url: '${pageContext.servletContext.contextPath}/route_v1/dataV1',
+        url: '${pageContext.servletContext.contextPath}/route_v2/dataV1',
         type: 'GET'
       },
       serverSide: true,
@@ -195,6 +200,54 @@
       ],
       language: {url: '${pageContext.servletContext.contextPath}/resources/assets/json/package_oz.json'},
     });
+
+    function job_start_funcV1_01() {
+      $.ajax({
+        type: "GET",
+        url: "${pageContext.servletContext.contextPath}/route_v2/dataV2",
+        beforeSend: function () {
+        },
+        success: function (response) {
+          $('.debtCount').text(response.transactionalMoneyList.length)
+
+          $('.totalActiveUzs').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUzs))
+          $('.totalActiveUzsUsage').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUzsGive))
+
+          $('.totalActiveUsd').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUsd))
+          $('.totalActiveUsdUsage').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUsdGive))
+
+          $('.moneyDayStartUzs').text(formatNumberWithThousandsSeparator(response.totalUzs) + '(UZS)')
+          $('.moneyDayStartUsd').text(formatNumberWithThousandsSeparator(response.totalUsd) + '(USD)')
+        },
+        error: function () {
+
+        }
+      });
+    }
+
+    function send_funcV1_01() {
+        var params_send_funcV1_01 = {
+            "fullName" : $('.fullName').val(),
+            "telNumber" : $('.telNumber').val(),
+            "moneyCost" : $('.moneyCost').val(),
+            "moneyType" : $('.moneyType').val(),
+            "serviceMoney" : $('.serviceMoney').val(),
+            "sendToAddress" : $('.sendToAddress').val(),
+            "isDebt" : $('.isDebt').val(),
+            "comment" : $('.comment').val(),
+        };
+        $.ajax({
+          type: "POST",
+          url: '${pageContext.servletContext.contextPath}/route_v2/dataV3',
+          data: JSON.stringify(params_send_funcV1_01),
+          dataType: "json",
+          success: function (response) {
+          },
+          error: function (response) {
+            alert('Xatolik!');
+          }
+        });
+    }
   </script>
 </body>
 </html>

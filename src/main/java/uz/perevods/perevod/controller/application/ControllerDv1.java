@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.security.secureData.SecuredUserData;
 import uz.perevods.perevod.service.application.JobCheckerService;
+import uz.perevods.perevod.service.helperClass.MessageCLassDto;
 
 @RestController
 @RequestMapping("/route_v1")
@@ -45,7 +46,7 @@ public class ControllerDv1 {
     @GetMapping("/data_v3/job_page_starting")
     public ResponseEntity<Object> getData3(@AuthenticationPrincipal UserDetails userDetails){
         Users users = securedUserData.getSecuredUserParams(userDetails);
-        jobCheckerService.setTotalMoney(users);
-        return new ResponseEntity<>(HttpStatus.OK);
+        MessageCLassDto messageCLassDto = jobCheckerService.setTotalMoney(users);
+        return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
     }
 }

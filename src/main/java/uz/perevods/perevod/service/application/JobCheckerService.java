@@ -8,6 +8,7 @@ import uz.perevods.perevod.entitiy.application.TotalMoneyLog;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.repository.application.TotalMoneyLogRepository;
 import uz.perevods.perevod.repository.application.TotalMoneyRepository;
+import uz.perevods.perevod.service.helperClass.MessageCLassDto;
 
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -54,8 +55,8 @@ public class JobCheckerService {
     }
 
 
-    public void setTotalMoney(Users users){
-        AtomicReference<String> message = null;
+    public MessageCLassDto setTotalMoney(Users users){
+        AtomicReference<String> message = new AtomicReference<>("Xisob mavjud emas!");
         AtomicReference<Boolean> success = new AtomicReference<>(false);
         String statusNotStart = "0";
         String statusStart = "1";
@@ -80,9 +81,15 @@ public class JobCheckerService {
                         totalMoneyLogRepository.save(totalMoneyLog);
 
                         success.set(true);
-                        message.set("Kunlik mablag' yetarli va ish boshlandi");
+                        message.set("Kunlik mablag' yetarli va ish boshlandi!");
+                    }else {
+                        message.set("Xisobda yetarli mablag' mavjud emas!");
                     }
                 }
+        );
+        return new MessageCLassDto(
+                message,
+                success
         );
     }
 

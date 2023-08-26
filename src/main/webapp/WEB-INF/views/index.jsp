@@ -183,8 +183,16 @@
                 </li>
             </ul>
             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit"></button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle rounded-5" data-bs-toggle="dropdown" aria-expanded="false">
+                        U
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a href="${pageContext.servletContext.contextPath}/logout" class="dropdown-item" type="button">Action</a></li>
+                        <li><a class="dropdown-item" type="button">Another action</a></li>
+                        <li><a class="dropdown-item" type="button">Something else here</a></li>
+                    </ul>
+                </div>
             </form>
         </div>
     </div>

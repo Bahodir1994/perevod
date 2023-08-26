@@ -68,4 +68,10 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Column(name = "comment", length = 600)
     private String comment;
 
+    @Column(name = "to_locationCode", length = 50)
+    private String insLocationCode;
+
+    @Column(name = "to_locationName", length = 50)
+    private String insLocationName;
+
 }

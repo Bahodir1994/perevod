@@ -79,14 +79,16 @@
                 url: "${pageContext.servletContext.contextPath}/route_v1/data_v3/job_page_starting",
                 beforeSend: function () {
                 },
-                accept: function () {
-                    alert("ac")
-                },
                 success: function (response) {
-                    $(location).attr('href', '${pageContext.servletContext.contextPath}/');
+                    console.log(response)
+                    if (response.success){
+                        $(location).attr('href', '${pageContext.servletContext.contextPath}/');
+                    }else {
+                        alert(response.message)
+                    }
                 },
                 error: function () {
-                    alert("er")
+                    alert("xatolik!")
                 }
             });
         }
