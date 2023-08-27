@@ -6,4 +6,7 @@ import uz.perevods.perevod.entitiy.application.TotalMoneyLog;
 
 @Repository
 public interface TotalMoneyLogRepository extends JpaRepository<TotalMoneyLog, String> {
+    TotalMoneyLog findByTotalMoney_TotalMoneyLogs_TotalMoneyId(String totalMoneyId);
+
+    TotalMoneyLog findByTotalMoneyId(String totalMoneyId);
 }

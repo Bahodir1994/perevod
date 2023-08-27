@@ -93,9 +93,9 @@
             <label for="moneyCost" class="form-label">Tranzaksiya miqdori</label>
             <div class="input-group has-validation">
               <span class="input-group-text currencyIcon">@</span>
-              <input type="text" class="form-control currency-mask moneyCost" id="moneyCost" required>
+              <input type="text" class="form-control format-currency currency-mask moneyCost" id="moneyCost" required>
               <div class="invalid-feedback">
-                Qiymat kiritilmagan!
+                Xizmat puli to'ldirilmagan yoki xato!
               </div>
             </div>
           </div>
@@ -114,9 +114,9 @@
             <label for="serviceMoney" class="form-label">Xizmat uchun</label>
             <div class="input-group has-validation">
               <span class="input-group-text">uzs</span>
-              <input type="text" class="form-control currency-mask serviceMoney" id="serviceMoney" required>
+              <input type="text" class="form-control format-currency currency-mask serviceMoney" id="serviceMoney" required>
               <div class="invalid-feedback">
-                Xizmat puli to'ldirilmagan!
+                Xizmat puli to'ldirilmagan yoki xato!
               </div>
             </div>
           </div>
@@ -134,21 +134,21 @@
 
           <div class="col-sm-6">
             <div class="form-check">
-              <input type="checkbox" class="form-check-input isDebt" id="isDebt">
+              <input type="checkbox" class="form-check-input isDebt" id="isDebt" required>
               <label class="form-check-label" for="isDebt">Qarzga berilmoqda</label>
             </div>
           </div>
 
           <div class="col-12">
-            <label for="comment" class="form-label comment">Izox</label>
-            <input type="text" class="form-control" id="comment">
+            <label for="comment" class="form-label">Izox</label>
+            <input type="text" class="form-control comment" id="comment" required>
           </div>
 
         </div>
 
         <div class="row py-2">
           <div class="col-sm-6">
-            <button class="btn btn-primary w-75" type="submit">Saqlash</button>
+            <button class="btn btn-primary w-75" onclick="send_funcV1_01()" type="button">Saqlash</button>
           </div>
         </div>
         <hr class="my-2">
@@ -160,11 +160,13 @@
   <table id="datatable1" class="table table-striped table-bordered responsive" style="width: 100%!important;">
   </table>
 
+  <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
   <script>
     $(document).ready(function () {
         job_start_funcV1_01();
     })
   </script>
+
   <script>
     var dt1 = $('#datatable1').DataTable({
       // retrieve: false,
@@ -192,8 +194,8 @@
             return row.paymentCost + ' (' + row.paymentCostType + ')'
           }},
         {title: 'Tel', className: 'text-left', name: 'column3', data: 'phone'},
-        {title: 'Berildi', className: 'text-left', name: 'column4', data: 'outTime'},
-        {title: 'Olindi', className: 'text-left', name: 'column5', data: 'inTime'},
+        {title: 'Chiqim', className: 'text-left', name: 'column4', data: 'outTime'},
+        {title: 'Kirim', className: 'text-left', name: 'column5', data: 'inTime'},
         {title: 'Qarzdor', className: 'text-left', name: 'column6', data: 'debt'},
         {title: 'Xizmat', className: 'text-left', name: 'column6', data: 'serviceUzs'},
         {title: 'Izox', className: 'text-left', name: 'column6', data: 'comment'},
@@ -226,14 +228,14 @@
     }
 
     function send_funcV1_01() {
-        var params_send_funcV1_01 = {
+      var params_send_funcV1_01 = {
             "fullName" : $('.fullName').val(),
             "telNumber" : $('.telNumber').val(),
-            "moneyCost" : $('.moneyCost').val(),
+            "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
             "moneyType" : $('.moneyType').val(),
-            "serviceMoney" : $('.serviceMoney').val(),
+            "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
             "sendToAddress" : $('.sendToAddress').val(),
-            "isDebt" : $('.isDebt').val(),
+            "isDebt" : $('.isDebt').prop("checked"),
             "comment" : $('.comment').val(),
         };
         $.ajax({
@@ -241,12 +243,30 @@
           url: '${pageContext.servletContext.contextPath}/route_v2/dataV3',
           data: JSON.stringify(params_send_funcV1_01),
           dataType: "json",
+          async: true,
+          contentType: 'application/json',
+          beforeSend: function(xhr) {},
           success: function (response) {
           },
-          error: function (response) {
-            alert('Xatolik!');
+          error: function (xhr, status, error) {
+            if (xhr.status === 400) {
+              handleValidationErrors(xhr);
+            } else {
+              alert('Error: ' + error);
+            }
           }
         });
+    }
+
+    function handleValidationErrors(errors) {
+      ![undefined, null, ''].includes(errors.responseJSON.fullName) ? $('.fullName').addClass('is-invalid') : $('.fullName').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.telNumber) ? $('.telNumber').addClass('is-invalid') : $('.telNumber').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.moneyCost) ? $('.moneyCost').addClass('is-invalid') : $('.moneyCost').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.moneyType) ? $('.moneyType').addClass('is-invalid') : $('.moneyType').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.serviceMoney) ? $('.serviceMoney').addClass('is-invalid') : $('.serviceMoney').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.sendToAddress) ? $('.sendToAddress').addClass('is-invalid') : $('.sendToAddress').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.isDebt) ? $('.isDebt').addClass('is-invalid') : $('.isDebt').removeClass('is-invalid');
+      ![undefined, null, ''].includes(errors.responseJSON.comment) ? $('.comment').addClass('is-invalid') : $('.comment').removeClass('is-invalid');
     }
   </script>
 </body>

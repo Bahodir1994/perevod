@@ -1,11 +1,14 @@
-package uz.perevods.perevod.controller.application;
+package uz.perevods.perevod.service.helperClass;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -14,24 +17,26 @@ import java.io.Serializable;
 @Setter
 public class TransactionalMoneyDto {
 
-    @NotEmpty
+    @NotBlank(message = "Bo'sh bo'lishi mumkun emas")
     private String fullName;
 
-    @NotEmpty
+    @NotBlank(message = "Bo'sh bo'lishi mumkun emas")
     private String telNumber;
 
-    @NotEmpty
+    @Pattern(regexp = "\\d+(\\.\\d{1,2})?", message = "Format xato")
     private String moneyCost;
 
-    @NotEmpty
+    @NotBlank
     private String moneyType;
 
+    @Pattern(regexp = "\\d+(\\.\\d{1,2})?", message = "Format xato")
     private String serviceMoney;
 
-    @NotEmpty
+    @NotBlank
     private String sendToAddress;
 
     private Boolean isDebt;
 
     private String comment;
+
 }

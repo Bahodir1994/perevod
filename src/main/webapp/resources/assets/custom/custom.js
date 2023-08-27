@@ -18,10 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
             currencyValueElement.innerHTML = currencyMask.masked.unmaskedValue || '-';
         });
     });
-
-
-    /**12**/
-
 });
 
 /**Setter selected currency Type icon to span on left input form currency**/
@@ -39,6 +35,14 @@ $(document).ready(function() {
 /**Clock time and Date**/
 $(document).ready(function() {
     time();
+
+    $('.format-currency').on('input', function() {
+        var inputValue = $(this).val().replace(/\s/g, ''); // Убираем пробелы
+        if (!isNaN(inputValue)) {
+            var formattedValue = formatNumberWithThousandsSeparator(inputValue);
+            $(this).val(formattedValue);
+        }
+    });
 });
 
 function time() {
@@ -56,6 +60,7 @@ function formatNumberWithThousandsSeparator(number) {
     var integerPart = Math.floor(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     return integerPart;
 }
+
 
 
 

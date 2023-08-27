@@ -1,7 +1,8 @@
 package uz.perevods.perevod.controller.application;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.HttpEntity;
@@ -11,18 +12,22 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.perevods.perevod.entitiy.application.TotalMoney;
 import uz.perevods.perevod.entitiy.application.TransactionalMoney;
 import uz.perevods.perevod.entitiy.authorization.Users;
-import uz.perevods.perevod.repository.application.TransactionalMoneyRepository;
 import uz.perevods.perevod.security.secureData.SecuredUserData;
 import uz.perevods.perevod.service.application.AppService1;
+import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
 import uz.perevods.perevod.service.helperClass.ValidationError;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/route_v2")
@@ -44,19 +49,35 @@ public class DataController1 {
         return new ResponseEntity<>(totalMoney, HttpStatus.OK);
     }
 
+    /**in money**/
     @PostMapping("/dataV3")
-    public ResponseEntity<Object> setData1(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult){
+    public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        Map<String, String> errors = new HashMap<>();
+        if (bindingResult.hasErrors()) {
+            errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
         ValidationError validationError = new ValidationError();
         if (bindingResult.hasErrors()){
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                validationError.addError(error.getField(), error.getDefaultMessage());
-            }
-            return new ResponseEntity<>(validationError, HttpStatus.BAD_REQUEST);
+            List<String> errorMessages = bindingResult.getFieldErrors()
+                    .stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
         }
 
         Users users = securedUserData.getSecuredUserParams(userDetails);
 
         appService1.setData1(transactionalMoneyDto, users);
         return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
+    }
+
+    /**out money**/
+    @PostMapping("/dataV4")
+    public ResponseEntity<Object> setData1(){
+        return null;
     }
 }
