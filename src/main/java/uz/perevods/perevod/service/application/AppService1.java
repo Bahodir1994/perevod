@@ -12,17 +12,17 @@ import uz.perevods.perevod.entitiy.application.TransactionalMoney;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.repository.application.TotalMoneyRepository;
 import uz.perevods.perevod.repository.application.TransactionalMoneyRepository;
+import uz.perevods.perevod.service.helperClass.MessageCLassDto;
+import uz.perevods.perevod.service.helperClass.MessageCLassDtoSimple;
 
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -71,9 +71,11 @@ public class AppService1 {
 
 
     /**Out Money**/
-    public void setData1(TransactionalMoneyDto trMDto, Users users){
+    public MessageCLassDtoSimple setData1(TransactionalMoneyDto trMDto, Users users){
         String totalMoneyStatusActive = "1";
         String totalMoneyLogStatusActive = "1";
+        String message = null;
+        Boolean status = false;
         Specification<TotalMoney> specification1= (root, query, criteriaBuilder) -> {
             Fetch<TotalMoney, TotalMoneyLog> fetch1 = root.fetch("TotalMoneyLog", JoinType.LEFT);
             Join<TotalMoney, TotalMoneyLog> join1 = (Join<TotalMoney, TotalMoneyLog>) fetch1;
@@ -88,28 +90,33 @@ public class AppService1 {
         if (totalMoney != null
                 && trMDto.getMoneyType().equals("uzs")
                 && totalMoney.getTotalUzs().compareTo(new BigDecimal(trMDto.getMoneyCost())) > 0){
-            TransactionalMoney transactionalMoney = new TransactionalMoney();
-            transactionalMoney.setTotalMoneyId(trMDto.getFullName());
-            transactionalMoney.setFullName(trMDto.getFullName());
-            transactionalMoney.setPhone(trMDto.getTelNumber());
-            transactionalMoney.setPaymentCost(new BigDecimal(trMDto.getMoneyCost()));
-            transactionalMoney.setPaymentCostType(trMDto.getMoneyType());
-            transactionalMoney.setServiceUzs(new BigDecimal(trMDto.getServiceMoney()));
-            transactionalMoney.setOutTime(new Date(System.currentTimeMillis()));
-            transactionalMoney.setDebt(trMDto.getIsDebt().toString());
-            transactionalMoneyRepository.save(transactionalMoney);
-
-
-
-        } else if (totalMoney != null && trMDto.getMoneyType().equals("usd")) {
-
+                /**1**/
+            saveTransactionalMoney(trMDto);
+            message = "Bajarilid (uzs)!";
+            status = true;
+        } else if (totalMoney != null
+                && trMDto.getMoneyType().equals("usd")
+                && totalMoney.getTotalUzs().compareTo(new BigDecimal(trMDto.getMoneyCost())) > 0) {
+                /**2**/
+            saveTransactionalMoney(trMDto);
+            message = "Bajarilid (usd)!";
+            status = true;
         }else {
-
+            message = "Xisobda mablag' yetarli emas!";
         }
-
+        return new MessageCLassDtoSimple(message, status);
     }
 
-    public void saveTransactionalMoney(){
-
+    public void saveTransactionalMoney(TransactionalMoneyDto trMDto){
+        TransactionalMoney transactionalMoney = new TransactionalMoney();
+        transactionalMoney.setTotalMoneyId(trMDto.getFullName());
+        transactionalMoney.setFullName(trMDto.getFullName());
+        transactionalMoney.setPhone(trMDto.getTelNumber());
+        transactionalMoney.setPaymentCost(new BigDecimal(trMDto.getMoneyCost()));
+        transactionalMoney.setPaymentCostType(trMDto.getMoneyType());
+        transactionalMoney.setServiceUzs(new BigDecimal(trMDto.getServiceMoney()));
+        transactionalMoney.setOutTime(new Date(System.currentTimeMillis()));
+        transactionalMoney.setDebt(trMDto.getIsDebt().toString());
+        transactionalMoneyRepository.save(transactionalMoney);
     }
 }
