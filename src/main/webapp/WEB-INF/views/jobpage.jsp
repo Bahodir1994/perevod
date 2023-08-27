@@ -83,7 +83,7 @@
 
           <div class="col-sm-6">
             <label for="telNumber" class="form-label">Tel.</label>
-            <input type="text" class="form-control telNumber" id="telNumber" required>
+            <input type="text" class="form-control phoneInput telNumber" id="telNumber" required>
             <div class="invalid-feedback">
               Tel raqam to'ldirilmagan!
             </div>
@@ -161,6 +161,8 @@
   </table>
 
   <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/google-libphonenumber/8.12.38/libphonenumber.js"></script>
+
   <script>
     $(document).ready(function () {
         job_start_funcV1_01();

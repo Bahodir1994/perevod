@@ -122,7 +122,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.googlecode.libphonenumber</groupId>
+            <artifactId>libphonenumber</artifactId>
+            <version>8.12.38</version> <!-- Версию можно обновить -->
+        </dependency>
     </dependencies>
 
     <build>
