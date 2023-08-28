@@ -5,7 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import uz.perevods.perevod.repository.application.TransactionalMoneyDataRepository;
+//import uz.perevods.perevod.repository.application.TransactionalMoneyDataRepository;
 import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
 import uz.perevods.perevod.entitiy.application.TotalMoney;
 import uz.perevods.perevod.entitiy.application.TotalMoneyLog;
@@ -20,10 +20,10 @@ import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,18 +31,24 @@ import java.util.Set;
 public class AppService1 {
     private final TotalMoneyRepository totalMoneyRepository;
     private final TransactionalMoneyRepository transactionalMoneyRepository;
-    private final TransactionalMoneyDataRepository transactionalMoneyDataRepository;
     private final TotalMoneyLogRepository totalMoneyLogRepository;
 
     public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput){
 
-        DataTablesOutput<TransactionalMoney> output = transactionalMoneyDataRepository.findAll(tablesInput);
+        List<TransactionalMoney> transactionalMonies = transactionalMoneyRepository.findAll();
+
+        DataTablesOutput<TransactionalMoney> output = new DataTablesOutput<>();
+        output.setData(transactionalMonies);
+        output.setRecordsTotal(transactionalMonies.size());
+        output.setRecordsFiltered(transactionalMonies.size());
+        output.setDraw(tablesInput.getDraw());
+
         return output;
     }
     public TotalMoney getData2(Users users){
         String statusTotalMoneyStarted = "1";
         String statusTotalMoneyLogActive = "1";
-        String statusTransactionalMoneyDebt = "1";
+        boolean statusTransactionalMoneyDebt = true;
         Specification<TotalMoney> specification = (root, query, criteriaBuilder) -> {
             Fetch<TotalMoney, TotalMoneyLog> fetch1 = root.fetch("totalMoneyLogs", JoinType.LEFT);
             Join<TotalMoney, TotalMoneyLog> join1 = (Join<TotalMoney, TotalMoneyLog>) fetch1;
@@ -84,7 +90,7 @@ public class AppService1 {
         TotalMoney totalMoney = totalMoneyRepository.findOne(specification1);
         if (totalMoney != null){
             /**1**/
-            saveTransactionalMoney(trMDto);
+            saveTransactionalMoney(trMDto, totalMoney.getId());
             saveTotalMoneyLog(totalMoney, trMDto);
             message = "Bajarilid (uzs)!";
             status = true;
@@ -93,15 +99,18 @@ public class AppService1 {
         }
         return new MessageCLassDtoSimple(message, status);
     }
-    public void saveTransactionalMoney(TransactionalMoneyDto trMDto){
+    public void saveTransactionalMoney(TransactionalMoneyDto trMDto, String totalMoneyId){
         TransactionalMoney transactionalMoney = new TransactionalMoney();
+        transactionalMoney.setTotalMoneyId(totalMoneyId);
         transactionalMoney.setFullName(trMDto.getFullName());
         transactionalMoney.setPhone(trMDto.getTelNumber());
         transactionalMoney.setPaymentCost(new BigDecimal(trMDto.getMoneyCost()));
         transactionalMoney.setPaymentCostType(trMDto.getMoneyType());
         transactionalMoney.setServiceUzs(new BigDecimal(trMDto.getServiceMoney()));
         transactionalMoney.setInTime(new Date(System.currentTimeMillis()));
-        transactionalMoney.setDebt(trMDto.getIsDebt().toString());
+        transactionalMoney.setDebt(trMDto.getIsDebt());
+        transactionalMoney.setInsLocationCode(trMDto.getSendToAddress());
+        transactionalMoney.setInsLocationName(getLocationName(trMDto.getSendToAddress()));
         transactionalMoneyRepository.save(transactionalMoney);
     }
     /**plus money**/
@@ -130,7 +139,18 @@ public class AppService1 {
 
 
     /**out Money**/
-
+    public void setCheckOutMoney(Users users, String value1) {
+        boolean thatIsNotForUserLocation = false; //this user by location can not check out money
+        boolean notEnoughMoney = false; // not enough money to transfer
+        boolean thatIsDebt = false; // this money was issued for debt
+        Optional<TransactionalMoney> transactionalMoney = transactionalMoneyRepository.findById(value1);
+        transactionalMoney.ifPresentOrElse(
+                transactionalMoney1 -> {
+//                    transactionalMoney1.get
+                },
+                () -> {}
+        );
+    }
 
     private String escapeContent(String content) {
         return content
@@ -139,5 +159,14 @@ public class AppService1 {
                 .replaceAll("_", "~_")
                 .trim()
                 .toUpperCase();
+    }
+    private String getLocationName(String locationCode) {
+        if (locationCode.equals("01")){
+            return "Toshkent";
+        }
+        if (locationCode.equals("95")){
+            return "Mang'it";
+        }
+        return null;
     }
 }

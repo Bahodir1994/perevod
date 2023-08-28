@@ -53,14 +53,11 @@ public class DataController1 {
     @PostMapping("/dataV3")
     public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Map<String, String> errors = new HashMap<>();
+        Map<String, String> errors;
         if (bindingResult.hasErrors()) {
             errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
-
-        ValidationError validationError = new ValidationError();
         if (bindingResult.hasErrors()){
             List<String> errorMessages = bindingResult.getFieldErrors()
                     .stream()
@@ -68,7 +65,6 @@ public class DataController1 {
                     .collect(Collectors.toList());
             return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
         }
-
         Users users = securedUserData.getSecuredUserParams(userDetails);
 
         appService1.setData1(transactionalMoneyDto, users);
@@ -77,7 +73,9 @@ public class DataController1 {
 
     /**out money**/
     @PostMapping("/dataV4")
-    public ResponseEntity<Object> setData1(){
+    public ResponseEntity<Object> setData1(@RequestParam("value1") String value1, @AuthenticationPrincipal UserDetails userDetails){
+        Users users = securedUserData.getSecuredUserParams(userDetails);
+        appService1.setCheckOutMoney(users, value1);
         return null;
     }
 }

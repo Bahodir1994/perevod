@@ -124,8 +124,8 @@
           <div class="col-sm-6">
             <label for="sendToAddress" class="form-label">Jo'natma manzili</label>
             <select class="form-select sendToAddress" id="sendToAddress" required>
-              <option value="01-toshkent">Toshkent</option>
-              <option value="95-mangit">Mangit</option>
+              <option value="01">Toshkent</option>
+              <option value="95">Mangit</option>
             </select>
             <div class="invalid-feedback">
               Jo'natma manzili tanlanmagan!
@@ -192,20 +192,39 @@
       columns: [
         {title: '№', className: 'text-center', sortable: false, searchable: false, orderable: false, name: 'column0', data: null, render: function (data, type, row, meta) {return meta.row + meta.settings._iDisplayStart + 1 +'.'}},
         {title: 'F.I.O', className: 'text-left', name: 'column1', data: 'fullName'},
-        {title: 'Summa', className: 'text-center', name: 'column2', data: 'id', render: (_, __, row) => {
-            return row.paymentCost + ' (' + row.paymentCostType + ')'
+        {title: 'Summa', className: 'text-left', name: 'column2', data: 'id', render: (_, __, row) => {
+            return formatNumberWithThousandsSeparator(row.paymentCost)+' (' + row.paymentCostType + ')</span>';
           }},
         {title: 'Tel', className: 'text-left', name: 'column3', data: 'phone'},
-        {title: 'Chiqim', className: 'text-left', name: 'column4', data: 'outTime'},
-        {title: 'Kirim', className: 'text-left', name: 'column5', data: 'inTime'},
-        {title: 'Qarzdor', className: 'text-left', name: 'column6', data: 'debt'},
-        {title: 'Xizmat', className: 'text-left', name: 'column6', data: 'serviceUzs'},
+        {title: 'Chiqim', className: 'text-center', name: 'column4', data: 'outTime', render: function (data, type, row, meta) {
+            const dateS = data ? new Date(data) : null;
+            if (dateS) {
+              const options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
+              return new Intl.DateTimeFormat('uz-UZ', options).format(dateS);
+            } else return '<button class="btn btn-sm btn-outline-success w-100" onclick="send_funcV1_02('+"'"+row.id+"'"+')"><i class="bi bi-clipboard-check-fill"></i></button>';
+          }},
+        {title: 'Kirim', className: 'text-center', name: 'column5', data: 'inTime', render: function (data, type, row, meta) {
+            const dateS = data ? new Date(data) : null;
+            if (dateS) {
+              const options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
+              return new Intl.DateTimeFormat('uz-UZ', options).format(dateS);
+            } else return '';
+          }},
+        {title: 'Qarzdor', className: 'text-left', name: 'column6', data: 'debt', render: (data, type, row, meta) => {
+            if (data) {
+               return 'qarz';
+            } else return 'yo\'q';
+          }},
+        {title: 'Xizmat', className: 'text-left', name: 'column6', data: 'serviceUzs', render: function (data, type, row, meta) {
+            return formatNumberWithThousandsSeparator(data) + ' (uzs)';
+          }},
         {title: 'Izox', className: 'text-left', name: 'column6', data: 'comment'},
       ],
       language: {url: '${pageContext.servletContext.contextPath}/resources/assets/json/package_oz.json'},
     });
 
     function job_start_funcV1_01() {
+      /**Xisob raqam ma'lumotlarini olish**/
       $.ajax({
         type: "GET",
         url: "${pageContext.servletContext.contextPath}/route_v2/dataV2",
@@ -230,20 +249,83 @@
     }
 
     function send_funcV1_01() {
+      /**Kirimni saqlash**/
       var params_send_funcV1_01 = {
-            "fullName" : $('.fullName').val(),
-            "telNumber" : $('.telNumber').val(),
-            "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
-            "moneyType" : $('.moneyType').val(),
-            "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
-            "sendToAddress" : $('.sendToAddress').val(),
-            "isDebt" : $('.isDebt').prop("checked"),
-            "comment" : $('.comment').val(),
-        };
-        $.ajax({
+        "fullName" : $('.fullName').val(),
+        "telNumber" : $('.telNumber').val(),
+        "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
+        "moneyType" : $('.moneyType').val(),
+        "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
+        "sendToAddress" : $('.sendToAddress').val(),
+        "isDebt" : $('.isDebt').prop("checked"),
+        "comment" : $('.comment').val(),
+      };
+
+      Swal.fire({
+        title: params_send_funcV1_01.fullName + ' маблағини қабул қилишни тасдиқлайсизми?',
+        showDenyButton: true,
+        confirmButtonText: 'Xa',
+        denyButtonText: `Yo'q`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "POST",
+            url: '${pageContext.servletContext.contextPath}/route_v2/dataV3',
+            data: JSON.stringify(params_send_funcV1_01),
+            dataType: "json",
+            async: true,
+            contentType: 'application/json',
+            beforeSend: function(xhr) {},
+            complete: function (xhr, status, error) {
+              if (xhr.status === 400) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: 'Ma\'lumotlarda xatolik bor!',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+                handleValidationErrors(xhr);
+              }
+              else if (xhr.status === 200) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Saqlandi!',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+                handleValidationErrors(xhr);
+                job_start_funcV1_01()
+                dt1.draw();
+              }
+              else {
+                Swal.fire('Ko\'zda tutilmagan xatolik!', '', 'info')
+              }
+            }
+          });
+        } else if (result.isDenied) {
+          // only close modal
+          // Swal.fire('Saqlash bekor qilindi!', '', 'info')
+        }
+      })
+    }
+    function send_funcV1_02(value) {
+      /**Chiqimni tasdiqlash**/
+      var params = {
+        "value1" : value
+      }
+      Swal.fire({
+        title: params_send_funcV1_01.fullName + ' маблағини беришни тасдиқлайсизми?',
+        showDenyButton: true,
+        confirmButtonText: 'Xa',
+        denyButtonText: `Yo'q`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
           type: "POST",
-          url: '${pageContext.servletContext.contextPath}/route_v2/dataV3',
-          data: JSON.stringify(params_send_funcV1_01),
+          url: '${pageContext.servletContext.contextPath}/route_v2/dataV4',
+          data: params,
           dataType: "json",
           async: true,
           contentType: 'application/json',
@@ -251,18 +333,36 @@
           complete: function (xhr, status, error) {
             if (xhr.status === 400) {
               handleValidationErrors(xhr);
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Ma\'lumotlarda xatolik bor!',
+                showConfirmButton: false,
+                timer: 1500
+              })
             }
             else if (xhr.status === 200) {
-              handleValidationErrors(xhr);
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Saqlandi!',
+                showConfirmButton: false,
+                timer: 1500
+              })
+              job_start_funcV1_01()
+              dt1.draw();
             }
             else {
               alert('Error: ' + error);
             }
           }
-        });
+      });
+        }
+      });
     }
 
     function handleValidationErrors(errors) {
+      /**Kirim ma'lumotlari validatsiyasi**/
       ![undefined, null, ''].includes(errors.responseJSON.fullName) ? $('.fullName').addClass('is-invalid') : $('.fullName').removeClass('is-invalid');
       ![undefined, null, ''].includes(errors.responseJSON.telNumber) ? $('.telNumber').addClass('is-invalid') : $('.telNumber').removeClass('is-invalid');
       ![undefined, null, ''].includes(errors.responseJSON.moneyCost) ? $('.moneyCost').addClass('is-invalid') : $('.moneyCost').removeClass('is-invalid');

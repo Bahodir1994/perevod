@@ -62,8 +62,8 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date outTime;
 
-    @Column(name = "debt", length = 3, columnDefinition = "VARCHAR DEFAULT 0")
-    private String debt;
+    @Column(name = "debt")
+    private Boolean debt;
 
     @Column(name = "comment", length = 600)
     private String comment;
