@@ -248,12 +248,14 @@
           async: true,
           contentType: 'application/json',
           beforeSend: function(xhr) {},
-          success: function (response) {
-          },
-          error: function (xhr, status, error) {
+          complete: function (xhr, status, error) {
             if (xhr.status === 400) {
               handleValidationErrors(xhr);
-            } else {
+            }
+            else if (xhr.status === 200) {
+              handleValidationErrors(xhr);
+            }
+            else {
               alert('Error: ' + error);
             }
           }

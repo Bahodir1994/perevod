@@ -15,9 +15,10 @@
 //
 //@Configuration
 //@EnableJpaRepositories(
-//        entityManagerFactoryRef = "entityManagerFactoryOracle",
-//        transactionManagerRef = "transactionManagerOracle",
-//        basePackages = {"uz.perevods.perevod.repository.authorization"}
+//        entityManagerFactoryRef = "entityManagerFactoryRef",
+//        transactionManagerRef = "transactionManagerRef",
+//        basePackages = {"uz.perevods.perevod.repository"},
+//        repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class
 //)
 //public class DataTablesConfiguration {
 //
@@ -34,10 +35,10 @@
 //    @Bean
 //    public DataSource dataSource() {
 //        DriverManagerDataSource ds = new DriverManagerDataSource();
-//        ds.setDriverClassName("oracle.jdbc.OracleDriver");
-//        ds.setUrl("jdbc:oracle:thin:@localhost:1521:databaseglob");
-//        ds.setUsername("SYSTEM");
-//        ds.setPassword("qwerty123ytrewq321IB");
+//        ds.setDriverClassName("org.postgresql.Driver");
+//        ds.setUrl("jdbc:postgresql://localhost:5432/postgres");
+//        ds.setUsername("postgres");
+//        ds.setPassword("Bekho1994");
 //        return ds;
 //    }
 //

@@ -38,8 +38,8 @@ public class DataController1 {
 
 
     @GetMapping("/dataV1")
-    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput, HttpServletRequest request){
-        return appService1.getData1(tablesInput, request);
+    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput){
+        return appService1.getData1(tablesInput);
     }
 
     @GetMapping("/dataV2")

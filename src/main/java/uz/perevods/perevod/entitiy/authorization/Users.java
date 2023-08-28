@@ -23,6 +23,9 @@ public class Users {
 
     private String username;
 
+    @Column(name = "full_name", columnDefinition = "VARCHAR(180)")
+    private String fullName;
+
     private String password;
 
     @Column(name = "location_code", length = 50)

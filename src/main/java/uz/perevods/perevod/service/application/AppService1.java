@@ -5,6 +5,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import uz.perevods.perevod.repository.application.TransactionalMoneyDataRepository;
 import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
 import uz.perevods.perevod.entitiy.application.TotalMoney;
 import uz.perevods.perevod.entitiy.application.TotalMoneyLog;
@@ -30,18 +31,12 @@ import java.util.Set;
 public class AppService1 {
     private final TotalMoneyRepository totalMoneyRepository;
     private final TransactionalMoneyRepository transactionalMoneyRepository;
+    private final TransactionalMoneyDataRepository transactionalMoneyDataRepository;
     private final TotalMoneyLogRepository totalMoneyLogRepository;
 
-    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput, HttpServletRequest request){
+    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput){
 
-        List<TransactionalMoney> transactionalMonies = transactionalMoneyRepository.findAll();
-
-        DataTablesOutput<TransactionalMoney> output = new DataTablesOutput<>();
-        output.setData(transactionalMonies);
-        output.setRecordsTotal(transactionalMonies.size());
-        output.setRecordsFiltered(transactionalMonies.size());
-        output.setDraw(tablesInput.getDraw());
-
+        DataTablesOutput<TransactionalMoney> output = transactionalMoneyDataRepository.findAll(tablesInput);
         return output;
     }
     public TotalMoney getData2(Users users){

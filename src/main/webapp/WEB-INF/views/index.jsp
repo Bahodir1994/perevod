@@ -24,6 +24,8 @@
 
     <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/resources/assets/css/app.css">
     <link href="${pageContext.servletContext.contextPath}/resources/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="${pageContext.servletContext.contextPath}/resources/assets/css/dropdowns.css" rel="stylesheet">
 
     <link href="${pageContext.servletContext.contextPath}/resources/assets/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link href="${pageContext.servletContext.contextPath}/resources/assets/css/responsive.bootstrap4.min.css" rel="stylesheet">
@@ -164,7 +166,7 @@
     </ul>
 </div>
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark border-dark-subtle shadow">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-black border-dark-subtle shadow">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Pul o'tkazma</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -182,18 +184,46 @@
                     <a class="nav-link" href="#">Yangiliklar</a>
                 </li>
             </ul>
-            <form class="d-flex" role="search">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary dropdown-toggle rounded-5" data-bs-toggle="dropdown" aria-expanded="false">
-                        U
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a href="${pageContext.servletContext.contextPath}/logout" class="dropdown-item" type="button">Action</a></li>
-                        <li><a class="dropdown-item" type="button">Another action</a></li>
-                        <li><a class="dropdown-item" type="button">Something else here</a></li>
-                    </ul>
-                </div>
-            </form>
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                    <img src="https://tpksklad.ru/static/img/avatar-2.png" alt="mdo" width="32" height="32" class="rounded-circle text-warning"> ${user.fullName}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-lg-end">
+                    <li>
+                        <a class="dropdown-item d-flex gap-2 align-items-center" href="#">
+                            <i class="bi bi-person-vcard-fill"></i>
+                            ${user.fullName}
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item d-flex gap-2 align-items-center" href="#">
+                            <i class="bi bi-people-fill"></i>
+                            Rollar
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item dropdown-item-danger d-flex gap-2 align-items-center" href="${pageContext.servletContext.contextPath}/logout">
+                            <i class="bi bi-box-arrow-in-left"></i>
+                            Chiqish
+                        </a>
+                    </li>
+                </ul>
+            </div>
+<%--            <form class="d-flex" role="search">--%>
+
+<%--                <div class="btn-group">--%>
+<%--                    <button type="button" class="btn btn-secondary dropdown-toggle rounded-5" data-bs-toggle="dropdown" aria-expanded="false">--%>
+<%--                        U--%>
+<%--                    </button>--%>
+<%--                    <ul class="dropdown-menu dropdown-menu-end">--%>
+<%--                        <li><a href="${pageContext.servletContext.contextPath}/logout" class="dropdown-item" type="button">Action</a></li>--%>
+<%--                        <li><a class="dropdown-item" type="button">Another action</a></li>--%>
+<%--                        <li><a class="dropdown-item" type="button">Something else here</a></li>--%>
+<%--                    </ul>--%>
+<%--                </div>--%>
+<%--            </form>--%>
         </div>
     </div>
 </nav>
