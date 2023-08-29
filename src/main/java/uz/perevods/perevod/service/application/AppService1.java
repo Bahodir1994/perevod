@@ -289,7 +289,14 @@ public class AppService1 {
 
                     }
                 },
-                () -> {}
+                () -> {
+                    TotalMoney totalMoneyNew = new TotalMoney();
+                    totalMoneyNew.setInsLocationCode(cashRegister.getCashRegister());
+                    totalMoneyNew.setInsLocationName(cashRegister.getCashRegister().equals("01") ? "Toshkent" :  /*else 95*/ "Mang'it");
+                    totalMoneyNew.setTotalUzs(new BigDecimal(cashRegister.getMoneyCostUzs()));
+                    totalMoneyNew.setTotalUsd(new BigDecimal(cashRegister.getMoneyCostUsd()));
+                    totalMoneyRepository.save(totalMoneyNew);
+                }
         );
 
         System.out.println("calling");
