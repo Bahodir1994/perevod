@@ -296,6 +296,7 @@ public class AppService1 {
                     totalMoneyNew.setTotalUzs(new BigDecimal(cashRegister.getMoneyCostUzs()));
                     totalMoneyNew.setTotalUsd(new BigDecimal(cashRegister.getMoneyCostUsd()));
                     totalMoneyRepository.save(totalMoneyNew);
+                    System.out.println("11");
                 }
         );
 
