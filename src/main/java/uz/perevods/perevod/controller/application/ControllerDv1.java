@@ -3,18 +3,21 @@ package uz.perevods.perevod.controller.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.security.secureData.SecuredUserData;
 import uz.perevods.perevod.service.application.JobCheckerService;
+import uz.perevods.perevod.service.helperClass.CashRegister;
 import uz.perevods.perevod.service.helperClass.MessageCLassDto;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/route_v1")
@@ -42,11 +45,11 @@ public class ControllerDv1 {
         return new ResponseEntity<>(jobCheckerService.getJobData1(users), HttpStatus.OK);
     }
 
-
     @GetMapping("/data_v3/job_page_starting")
     public ResponseEntity<Object> getData3(@AuthenticationPrincipal UserDetails userDetails){
         Users users = securedUserData.getSecuredUserParams(userDetails);
         MessageCLassDto messageCLassDto = jobCheckerService.setTotalMoney(users);
         return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
     }
+
 }

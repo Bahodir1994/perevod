@@ -6,10 +6,12 @@ import org.springframework.stereotype.Repository;
 import uz.perevods.perevod.entitiy.application.TransactionalMoney;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
 public interface TransactionalMoneyRepository extends JpaRepository<TransactionalMoney, String> {
 
     Set<TransactionalMoney> findAll(Specification<TransactionalMoney> specification1);
+    Optional<TransactionalMoney> findOne(Specification<TransactionalMoney> specification1);
 }

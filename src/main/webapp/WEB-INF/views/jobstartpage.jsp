@@ -72,7 +72,6 @@
                 }
             });
         }
-
         function job_start_funcV1_02() {
             $.ajax({
                 type: "GET",
@@ -92,7 +91,6 @@
                 }
             });
         }
-
     </script>
     </body>
 </html>

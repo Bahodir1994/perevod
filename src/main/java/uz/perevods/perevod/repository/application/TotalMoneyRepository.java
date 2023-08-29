@@ -14,4 +14,6 @@ public interface TotalMoneyRepository extends JpaRepository<TotalMoney, String> 
     Optional<TotalMoney> findByInsLocationCodeAndStatus(String insLocationCode, String status);
 
     TotalMoney findOne(Specification<TotalMoney> specification);
+
+    Optional<TotalMoney> findSpecific(Specification<TotalMoney> specification);
 }

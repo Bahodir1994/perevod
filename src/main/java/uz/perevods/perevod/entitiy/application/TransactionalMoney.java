@@ -48,7 +48,7 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Column(name = "service_uzs", length = 50)
     private BigDecimal serviceUzs;
 
-    @Column(name = "full_name", unique = true, length = 300)
+    @Column(name = "full_name", length = 300)
     private String fullName;
 
     @Column(name = "phone", length = 20)

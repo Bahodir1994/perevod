@@ -124,8 +124,6 @@
           <div class="col-sm-6">
             <label for="sendToAddress" class="form-label">Jo'natma manzili</label>
             <select class="form-select sendToAddress" id="sendToAddress" required>
-              <option value="01">Toshkent</option>
-              <option value="95">Mangit</option>
             </select>
             <div class="invalid-feedback">
               Jo'natma manzili tanlanmagan!
@@ -147,29 +145,27 @@
         </div>
 
         <div class="row py-2">
-          <div class="col-sm-6">
-            <button class="btn btn-primary w-75" onclick="send_funcV1_01()" type="button">Saqlash</button>
+          <div class="col-sm-12 d-flex justify-content-between">
+            <button class="btn btn-primary w-100 mx-2" onclick="send_funcV1_01()" type="button"><i class="bi bi-download"></i> Saqlash</button>
+            <button class="btn btn-success w-100 mx-2" onclick="clear_form1_1()" type="button"><i class="bi bi-arrow-clockwise"></i> Yangilash</button>
           </div>
         </div>
         <hr class="my-2">
       </form>
     </div>
-
-
   </div>
   <table id="datatable1" class="table table-striped table-bordered responsive" style="width: 100%!important;">
   </table>
 
   <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/google-libphonenumber/8.12.38/libphonenumber.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 
   <script>
     $(document).ready(function () {
         job_start_funcV1_01();
+        selectingSelectionByUserLocation(userLocation)
     })
-  </script>
 
-  <script>
     var dt1 = $('#datatable1').DataTable({
       // retrieve: false,
       // deferLoading: true,
@@ -187,7 +183,7 @@
       dom: '<"row"<"col-sm-12 justify-content-end"f>>' +
               '<"row"<"col-sm-12"t>>' +
               '<"row"<"col-sm-12 d-flex justify-content-center"pr>>' +
-              '<"row"<"col-sm-6 text-start"l><"col-sm-6 text-end"i>>',
+              '<"row"<"col-sm-6 col-md-6 text-start"l><"col-sm-5 col-md-5 text-end"i>>',
       lengthMenu: [[10, 50, 100, -1], [10, 50, 100, 'Barcha']],
       columns: [
         {title: '№', className: 'text-center', sortable: false, searchable: false, orderable: false, name: 'column0', data: null, render: function (data, type, row, meta) {return meta.row + meta.settings._iDisplayStart + 1 +'.'}},
@@ -201,7 +197,7 @@
             if (dateS) {
               const options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
               return new Intl.DateTimeFormat('uz-UZ', options).format(dateS);
-            } else return '<button class="btn btn-sm btn-outline-success w-100" onclick="send_funcV1_02('+"'"+row.id+"'"+')"><i class="bi bi-clipboard-check-fill"></i></button>';
+            } else return '<button class="btn btn-sm btn-outline-success w-100" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+"'"+row.fullName+"'"+')"><i class="bi bi-clipboard-check-fill"></i></button>';
           }},
         {title: 'Kirim', className: 'text-center', name: 'column5', data: 'inTime', render: function (data, type, row, meta) {
             const dateS = data ? new Date(data) : null;
@@ -296,6 +292,7 @@
                   timer: 1500
                 })
                 handleValidationErrors(xhr);
+                clear_form1_1()
                 job_start_funcV1_01()
                 dt1.draw();
               }
@@ -310,13 +307,13 @@
         }
       })
     }
-    function send_funcV1_02(value) {
+    function send_funcV1_02(value, fullName) {
       /**Chiqimni tasdiqlash**/
       var params = {
         "value1" : value
       }
       Swal.fire({
-        title: params_send_funcV1_01.fullName + ' маблағини беришни тасдиқлайсизми?',
+        title: fullName + ' маблағини беришни тасдиқлайсизми?',
         showDenyButton: true,
         confirmButtonText: 'Xa',
         denyButtonText: `Yo'q`,
@@ -326,9 +323,9 @@
           type: "POST",
           url: '${pageContext.servletContext.contextPath}/route_v2/dataV4',
           data: params,
-          dataType: "json",
+          // dataType: "json",
           async: true,
-          contentType: 'application/json',
+          // contentType: 'application/json',
           beforeSend: function(xhr) {},
           complete: function (xhr, status, error) {
             if (xhr.status === 400) {
@@ -342,18 +339,36 @@
               })
             }
             else if (xhr.status === 200) {
+              if (!xhr.responseJSON.success){
+                Swal.fire({
+                  position: 'center',
+                  icon: 'info',
+                  title: xhr.responseJSON.message,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              } else { //success true
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Saqlandi!',
+                  text: xhr.responseJSON.message,
+                  showConfirmButton: false,
+                  timer: 2000
+                })
+                clear_form1_1()
+                job_start_funcV1_01()
+                dt1.draw();
+              }
+            }
+            else {
               Swal.fire({
                 position: 'center',
-                icon: 'success',
-                title: 'Saqlandi!',
+                icon: 'error',
+                title: error,
                 showConfirmButton: false,
                 timer: 1500
               })
-              job_start_funcV1_01()
-              dt1.draw();
-            }
-            else {
-              alert('Error: ' + error);
             }
           }
       });
@@ -372,6 +387,54 @@
       ![undefined, null, ''].includes(errors.responseJSON.isDebt) ? $('.isDebt').addClass('is-invalid') : $('.isDebt').removeClass('is-invalid');
       ![undefined, null, ''].includes(errors.responseJSON.comment) ? $('.comment').addClass('is-invalid') : $('.comment').removeClass('is-invalid');
     }
+    function clear_form1_1() {
+      $('.fullName').removeClass('is-invalid').val('');
+      $('.telNumber').removeClass('is-invalid').val('');
+      $('.moneyCost').removeClass('is-invalid').val('');
+      $('.moneyType').removeClass('is-invalid');
+      $('.serviceMoney').removeClass('is-invalid').val('');
+      $('.sendToAddress').removeClass('is-invalid');
+      $('.isDebt').removeClass('is-invalid').prop('checked', false);
+      $('.comment').removeClass('is-invalid').val('');
+    }
+    function selectingSelectionByUserLocation(locationId) {
+      var loc95To01 = '<option value="01">Toshkent</option>';
+      var loc95To01Code = '01';
+      var loc01To95 = '<option value="95">Mangit</option>';
+      var loc01To95Code = '95';
+      if (locationId === "01"){
+        $('.sendToAddress').html(loc01To95);
+        $('.sendToAddress option[value="'+loc01To95Code+'"]').prop('selected', true)
+      }
+      if (locationId === "95"){
+        $('.sendToAddress').html(loc95To01);
+        $('.sendToAddress option[value="'+loc95To01Code+'"]').prop('selected', true)
+      }
+    }
+
+    $(document).ready(function() {
+      const table = $('#datatable1').DataTable();
+
+      let clickStartTime;
+      let clickTimeout;
+
+      // Add a click event handler to rows
+      $('#datatable1 tbody').on('mousedown', 'tr', function() {
+        const row = table.row(this);
+        clickStartTime = new Date().getTime();
+
+        clickTimeout = setTimeout(function() {
+          // Display an alert with the row ID
+          alert('Row ID: ' + row.data()[0]);
+        }, 3000);
+      }).on('mouseup', 'tr', function() {
+        clearTimeout(clickTimeout);
+        const clickDuration = new Date().getTime() - clickStartTime;
+        if (clickDuration < 3000) {
+          // Handle normal click or release
+        }
+      });
+    });
   </script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package uz.perevods.perevod.controller.application;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +21,13 @@ public class HomeController {
     private final SecuredUserData securedUserData;
 
     @GetMapping("/")
-    public ModelAndView home(@AuthenticationPrincipal UserDetails userDetails){
+    public ModelAndView home(@AuthenticationPrincipal UserDetails userDetails) throws JsonProcessingException {
         Users users = securedUserData.getSecuredUserParams(userDetails);
+        ObjectMapper objectMapper = new ObjectMapper();
+
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("user", users);
+        modelAndView.addObject("userLocation", objectMapper.writeValueAsString(users.getLocationCode()));
         return modelAndView;
     }
 }

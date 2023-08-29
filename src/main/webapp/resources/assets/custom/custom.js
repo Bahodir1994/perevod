@@ -63,18 +63,8 @@ function formatNumberWithThousandsSeparator(number) {
 
 
 /**formt phone number by google**/
-$(document).ready(function() {
-    var phoneInput = $('.phoneInput');
-
-    phoneInput.on("input", function() {
-        var input = $(this).val();
-        var region = "UZ"; // Измените на "UZ" для Узбекистана
-
-        var phoneNumber = libphonenumber.parsePhoneNumber(input, region);
-        var formattedPhoneNumber = phoneNumber ? phoneNumber.formatInternational() : input;
-
-        $(this).val(formattedPhoneNumber);
-    });
+$(".phoneInput").on("input", function() {
+    $('.phoneInput').inputmask('99-999-99-99');
 });
 
 

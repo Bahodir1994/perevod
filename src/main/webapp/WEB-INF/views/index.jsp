@@ -169,14 +169,14 @@
 
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-black border-dark-subtle shadow">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Pul o'tkazma</a>
+            <a class="navbar-brand" href="${pageContext.servletContext.contextPath}/">Pul o'tkazma</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">AdminPanel</a>
+                        <a class="nav-link active" aria-current="page" onclick="app_funcV1_02()" href="#">AdminPanel</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Xisobot</a>
@@ -189,7 +189,7 @@
                     <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                         <img src="https://tpksklad.ru/static/img/avatar-2.png" alt="mdo" width="32" height="32" class="rounded-circle text-warning"> ${user.fullName}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-lg-end">
+                    <ul class="dropdown-menu dropdown-menu-lg-end shadow-lg border border-primary">
                         <li>
                             <a class="dropdown-item d-flex gap-2 align-items-center" href="#">
                                 <i class="bi bi-person-vcard-fill"></i>
@@ -212,19 +212,6 @@
                         </li>
                     </ul>
                 </div>
-    <%--            <form class="d-flex" role="search">--%>
-
-    <%--                <div class="btn-group">--%>
-    <%--                    <button type="button" class="btn btn-secondary dropdown-toggle rounded-5" data-bs-toggle="dropdown" aria-expanded="false">--%>
-    <%--                        U--%>
-    <%--                    </button>--%>
-    <%--                    <ul class="dropdown-menu dropdown-menu-end">--%>
-    <%--                        <li><a href="${pageContext.servletContext.contextPath}/logout" class="dropdown-item" type="button">Action</a></li>--%>
-    <%--                        <li><a class="dropdown-item" type="button">Another action</a></li>--%>
-    <%--                        <li><a class="dropdown-item" type="button">Something else here</a></li>--%>
-    <%--                    </ul>--%>
-    <%--                </div>--%>
-    <%--            </form>--%>
             </div>
         </div>
     </nav>
@@ -248,14 +235,30 @@
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/sweetalert2.all.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
     <script>
+        const userLocation = (${userLocation});
+
         $(document).ready(function () {
             app_funcV1_01();
         })
-
         function app_funcV1_01() {
             $.ajax({
                 type: "GET",
                 url: "${pageContext.servletContext.contextPath}/route_v1/data_v1/job_status",
+                beforeSend: function () {
+                },
+                accept: function () {
+                },
+                success: function (response) {
+                    $("#mainApps").html(response);
+                },
+                error: function () {
+                }
+            });
+        }
+        function app_funcV1_02() {
+            $.ajax({
+                type: "GET",
+                url: "${pageContext.servletContext.contextPath}/route_v3/data_v1/admin_panel",
                 beforeSend: function () {
                 },
                 accept: function () {

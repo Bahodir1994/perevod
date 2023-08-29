@@ -19,6 +19,7 @@ import uz.perevods.perevod.entitiy.application.TransactionalMoney;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.security.secureData.SecuredUserData;
 import uz.perevods.perevod.service.application.AppService1;
+import uz.perevods.perevod.service.helperClass.MessageCLassDto;
 import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
 import uz.perevods.perevod.service.helperClass.ValidationError;
 
@@ -51,19 +52,11 @@ public class DataController1 {
 
     /**in money**/
     @PostMapping("/dataV3")
-    public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails
-    ) {
+    public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
         Map<String, String> errors;
         if (bindingResult.hasErrors()) {
             errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-        if (bindingResult.hasErrors()){
-            List<String> errorMessages = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .collect(Collectors.toList());
-            return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
         }
         Users users = securedUserData.getSecuredUserParams(userDetails);
 
@@ -75,7 +68,11 @@ public class DataController1 {
     @PostMapping("/dataV4")
     public ResponseEntity<Object> setData1(@RequestParam("value1") String value1, @AuthenticationPrincipal UserDetails userDetails){
         Users users = securedUserData.getSecuredUserParams(userDetails);
-        appService1.setCheckOutMoney(users, value1);
-        return null;
+        try {
+            MessageCLassDto messageCLassDto = appService1.setCheckOutMoney(users, value1);
+            return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
+        }catch (Exception error) {
+            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

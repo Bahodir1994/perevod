@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.io.Serializable;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,18 +16,20 @@ import java.io.Serializable;
 public class TransactionalMoneyDto {
 
     @NotBlank(message = "Bo'sh bo'lishi mumkun emas")
+    @Size(max = 60, message = "Ma'lumot xajmi katta!")
     private String fullName;
 
     @NotBlank(message = "Bo'sh bo'lishi mumkun emas")
+    @Size(max = 20, message = "Ma'lumot xajmi katta!")
     private String telNumber;
 
-    @Pattern(regexp = "\\d+(\\.\\d{1,2})?", message = "Format xato")
+    @Pattern(regexp = "^\\d{1,15}(\\.\\d{1,2})?$|.{1,12}", message = "Format yoki xajm xato")
     private String moneyCost;
 
     @NotBlank
     private String moneyType;
 
-    @Pattern(regexp = "\\d+(\\.\\d{1,2})?", message = "Format xato")
+    @Pattern(regexp = "^\\d{1,15}(\\.\\d{1,2})?$|.{1,12}", message = "Format yoki xajm xato")
     private String serviceMoney;
 
     @NotBlank
