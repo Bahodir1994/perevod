@@ -17,7 +17,7 @@
         <meta name="description" content="">
         <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
         <meta name="generator" content="Hugo 0.115.4">
-        <title>Fixed top navbar example · Bootstrap v5.3</title>
+        <title>Pul o'zkazmalari</title>
 
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/jquery.dataTables.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/navbar-fixed.css" rel="stylesheet">
