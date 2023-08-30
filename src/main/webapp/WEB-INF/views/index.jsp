@@ -230,7 +230,7 @@
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.select.min.js"></script>
 
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery.spring-friendly.js"></script>
-    <script src="${pageContext.servletContext.contextPath}/resources/assets/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="${pageContext.servletContext.contextPath}/resources/assets/js/bootstrap.bundle.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/data/imask/dist/imask.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/sweetalert2.all.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
@@ -261,13 +261,36 @@
                 url: "${pageContext.servletContext.contextPath}/route_v3/data_v1/admin_panel",
                 beforeSend: function () {
                 },
-                accept: function () {
+                complete: function (xhr, status, error) {
+                    if (xhr.status === 400) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Ma\'lumotlarda xatolik bor!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                    else if (xhr.status === 200) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Admin oynasi',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $("#mainApps").html(xhr.responseText);
+                    }
+                    else if (xhr.status === 403){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Taqiqlangan!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
                 },
-                success: function (response) {
-                    $("#mainApps").html(response);
-                },
-                error: function () {
-                }
             });
         }
     </script>

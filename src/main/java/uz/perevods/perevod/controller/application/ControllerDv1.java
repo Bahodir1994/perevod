@@ -1,6 +1,7 @@
 package uz.perevods.perevod.controller.application;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -50,6 +51,17 @@ public class ControllerDv1 {
         Users users = securedUserData.getSecuredUserParams(userDetails);
         MessageCLassDto messageCLassDto = jobCheckerService.setTotalMoney(users);
         return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/data_v4/job_page_finishing")
+    public ResponseEntity<Object> getData4(@AuthenticationPrincipal UserDetails userDetails){
+        Users users = securedUserData.getSecuredUserParams(userDetails);
+        try {
+            MessageCLassDto messageCLassDto = jobCheckerService.finishJobDay(users);
+            return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
+        }catch (Exception error){
+            return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

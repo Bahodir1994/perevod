@@ -49,7 +49,7 @@ public class TotalMoney extends AbstractAuditingEntity {
     @Column(name = "ins_locationName", length = 50)
     private String insLocationName;
 
-    @Column(name = "status", length = 5, columnDefinition = "DEFAULT 0")
+    @Column(name = "status", length = 5)
     private String status; /*0-not start; 1-started, 2-finished*/
 
     @Column(name = "start_time", columnDefinition = "timestamp")
@@ -60,4 +60,13 @@ public class TotalMoney extends AbstractAuditingEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date finishTime;
 
+    @Column(name = "comment", length = 600)
+    private String comment;
+
+    @PrePersist
+    private void initializeDefaultStatus() {
+        if (status == null) {
+            status = "0"; // or whatever default value you need
+        }
+    }
 }

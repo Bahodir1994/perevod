@@ -48,6 +48,7 @@ public class AppService1 {
         String statusTotalMoneyStarted = "1";
         String statusTotalMoneyLogActive = "1";
         boolean statusTransactionalMoneyDebt = true;
+
         Specification<TotalMoney> specification = (root, query, criteriaBuilder) -> {
             Fetch<TotalMoney, TotalMoneyLog> fetch1 = root.fetch("totalMoneyLogs", JoinType.LEFT);
             Join<TotalMoney, TotalMoneyLog> join1 = (Join<TotalMoney, TotalMoneyLog>) fetch1;
@@ -61,10 +62,11 @@ public class AppService1 {
 
         Specification<TransactionalMoney> specification1 = (root, query, criteriaBuilder) -> {
             Predicate predicate4 = criteriaBuilder.equal(root.get("debt"), statusTransactionalMoneyDebt);
-            return criteriaBuilder.and(predicate4);
+            Predicate predicate5 = criteriaBuilder.isNull(root.get("debtPaid"));
+            return criteriaBuilder.and(predicate4, predicate5);
         };
         Set<TransactionalMoney> transactionalMoney = transactionalMoneyRepository.findAll(specification1);
-        TotalMoney totalMoney = totalMoneyRepository.findOne(specification);
+        TotalMoney totalMoney = totalMoneyRepository.findOne(specification).get();
         totalMoney.setTransactionalMoneyList(transactionalMoney);
 
         return totalMoney;
@@ -86,7 +88,7 @@ public class AppService1 {
 
             return criteriaBuilder.and(predicate1, predicate2, predicate3);
         };
-        TotalMoney totalMoney = totalMoneyRepository.findOne(specification1);
+        TotalMoney totalMoney = totalMoneyRepository.findOne(specification1).get();
         if (totalMoney != null){
             /**1**/
             saveTransactionalMoneyIn(trMDto, totalMoney.getId());
@@ -139,7 +141,7 @@ public class AppService1 {
             Predicate predicate2 = criteriaBuilder.equal(root.get("status"), statusChechOutUserTotalMoney);
             return criteriaBuilder.and(predicate1, predicate2);
         };
-        TotalMoney totalMoney = totalMoneyRepository.findOne(specification1);
+        TotalMoney totalMoney = totalMoneyRepository.findOne(specification1).get();
 
         transactionalMoney.ifPresentOrElse(
                 transactionalMoney1 -> {
@@ -267,93 +269,136 @@ public class AppService1 {
 
         Specification<TotalMoney> specification1 = (root, query, criteriaBuilder) -> {
             root.fetch("totalMoneyLogs", JoinType.LEFT);
-            root.fetch("transactionalMoneyList", JoinType.LEFT);
             Predicate predicate1 = criteriaBuilder.equal(root.get("status"), statusTotalMoneyActive);
             Predicate predicate2 = criteriaBuilder.equal(root.get("status"), statusTotalMoneyNotActive);
             Predicate predicate3 = criteriaBuilder.equal(root.get("insLocationCode"), locationCode);
             Predicate predicateOr = criteriaBuilder.or(predicate1, predicate2);
             return criteriaBuilder.and(predicate3, predicateOr);
         };
-        Optional<TotalMoney> totalMoney = totalMoneyRepository.findAll(specification1);
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification1);
 
-        boolean isPlus_uzs = cashRegister.getMinusUzs();
-        boolean isPlus_usd = cashRegister.getMinusUsd();
+        Boolean isPlus_uzs = !cashRegister.getMinusUzs();
+        Boolean isPlus_usd = !cashRegister.getMinusUsd();
 
-        boolean isComFromTm_uzs = false;
-        boolean isComFromTm_usd = false;
+        Boolean isComFromTm_uzs = false;
+        Boolean isComFromTm_usd = false;
 
-        boolean isComFromTmLog_uzs = false;
-        boolean isComFromTmLog_usd = false;
+        Boolean isComFromTmLog_uzs = false;
+        Boolean isComFromTmLog_usd = false;
 
-        boolean isTotalMoneyActive_uzs = false;
-        boolean isTotalMoneyActive_usd = false;
+        Boolean isTotalMoneyActive_uzs = false;
+        Boolean isTotalMoneyActive_usd = false;
 
+        Boolean haveTotalMoney = false;
+        Boolean haveTotalMoneyLog = false;
 
+        if (totalMoney.isPresent()){
+            TotalMoney totalMoneyOrg = totalMoney.get();
+            System.out.println(totalMoneyOrg.getTotalUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0);
+            isComFromTm_uzs = totalMoneyOrg.getTotalUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0;
+            isComFromTm_usd = totalMoneyOrg.getTotalUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0;
+            if (totalMoneyOrg.getStatus().equals("1")){
+                isTotalMoneyActive_uzs = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0;
+                isTotalMoneyActive_usd = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0;
+                haveTotalMoneyLog = true;
+            }
+            haveTotalMoney = true;
+        }else {
+            TotalMoney totalMoneyNew = new TotalMoney();
+            totalMoneyNew.setInsLocationCode(cashRegister.getCashRegister());
+            totalMoneyNew.setInsLocationName(cashRegister.getCashRegister().equals("01") ? "Toshkent" :  /*else 95*/ "Mang'it");
+            totalMoneyNew.setTotalUzs(new BigDecimal(cashRegister.getMoneyCostUzs()));
+            totalMoneyNew.setTotalUsd(new BigDecimal(cashRegister.getMoneyCostUsd()));
+            totalMoneyRepository.save(totalMoneyNew);
 
+            messageCLassDto.setSuccess(new AtomicReference<>(true));
+            messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari yangi kiritildi"));
+        }
 
-        totalMoney.ifPresentOrElse(
-                totalMoney1 -> {
-                    if (!cashRegister.getMinusUzs()){
-                        totalMoney1.setTotalUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+        /**************************************************************************************************************/
 
-                        messageCLassDto.setMessage(new AtomicReference<>("(UZS) saqlandi!; "));
-                        messageCLassDto.setSuccess(new AtomicReference<>(true));
-                    }else { // (usd) need subtract by currect money
-                        if (totalMoney1.getTotalUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0) {
-                            totalMoney1.setTotalUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+        if (haveTotalMoney){
+            if (isPlus_uzs && isPlus_usd){
+                if (haveTotalMoneyLog) {
+                    TotalMoneyLog totalMoneyLog = totalMoney.get().getTotalMoneyLogs().get(0);
+                    TotalMoney totalMoneyUpdate = totalMoney.get();
 
-                            messageCLassDto.setMessage(new AtomicReference<>("(UZS) saqlandi!; "));
-                            messageCLassDto.setSuccess(new AtomicReference<>(true));
-                        }else {
-                            messageCLassDto.setSuccess(new AtomicReference<>(false));
-                            messageCLassDto.setMessage(new AtomicReference<>("(UZS) yetarli emas!; "));
-                        }
-                    }
-                    /********************************/
-                    if (!cashRegister.getMinusUsd()){
-                        totalMoney1.setTotalUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                    totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                    totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
 
-                        messageCLassDto.setMessage(new AtomicReference<>(messageCLassDto.getMessage() + "(USD) saqlandi!; "));
-                        messageCLassDto.setSuccess(new AtomicReference<>(true));
-                    }else { // (usd) need subtract by currect money
-                        if (totalMoney1.getTotalUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0) {
-                            totalMoney1.setTotalUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
-                            messageCLassDto.setMessage(new AtomicReference<>("(USD) saqlandi!; "));
-                            messageCLassDto.setSuccess(new AtomicReference<>(true));
-                        }
-                        else {
-                            messageCLassDto.setSuccess(new AtomicReference<>(false));
-                            messageCLassDto.setMessage(new AtomicReference<>(messageCLassDto.getMessage() + "(USD) yetarli emas!"));
-                        }
-                    }
-                    if (totalMoney1.getStatus().equals("0")){ // equals: 0 and this not active
-                        messageCLassDto.setMessageSecond(new AtomicReference<>("Aktiv bo'lmagan kunlik kassaga o'zgartirish kiritildi!"));
-                    }else { // equals: 1 and this active
-                        TotalMoneyLog totalMoneyLog = totalMoney1.getTotalMoneyLogs().get(0);
-                        totalMoneyLog.setTotalMoneyUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
-                        totalMoneyLog.setTotalMoneyUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
-                        totalMoneyLogRepository.save(totalMoneyLog);
-                        messageCLassDto.setMessageSecond(new AtomicReference<>("Aktiv bo'lgan kunlik kassaga o'zgartirish kiritildi!"));
-                    }
-                    /**Save if all correct else not**/
-                    if (messageCLassDto.getSuccess().get()){
-                        totalMoneyRepository.save(totalMoney1);
+                    totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                    totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
 
-
-                    }
-                },
-                () -> {
-                    TotalMoney totalMoneyNew = new TotalMoney();
-                    totalMoneyNew.setInsLocationCode(cashRegister.getCashRegister());
-                    totalMoneyNew.setInsLocationName(cashRegister.getCashRegister().equals("01") ? "Toshkent" :  /*else 95*/ "Mang'it");
-                    totalMoneyNew.setTotalUzs(new BigDecimal(cashRegister.getMoneyCostUzs()));
-                    totalMoneyNew.setTotalUsd(new BigDecimal(cashRegister.getMoneyCostUsd()));
-                    totalMoneyRepository.save(totalMoneyNew);
+                    totalMoneyLogRepository.save(totalMoneyLog);
+                    totalMoneyRepository.save(totalMoneyUpdate);
 
                     messageCLassDto.setSuccess(new AtomicReference<>(true));
-                    messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari yangi kiritildi"));
+                    messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari o'zgartirildi"));
+                }else {
+                    TotalMoney totalMoneyUpdate = totalMoney.get();
+
+                    totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                    totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+
+                    totalMoneyRepository.save(totalMoneyUpdate);
+
+                    messageCLassDto.setSuccess(new AtomicReference<>(true));
+                    messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari o'zgartirildi"));
                 }
-        );
+            }else {
+                if (haveTotalMoneyLog) {
+                    if (isComFromTm_uzs && isComFromTm_usd && isComFromTmLog_uzs && isComFromTmLog_usd){
+                        TotalMoneyLog totalMoneyLog = totalMoney.get().getTotalMoneyLogs().get(0);
+                        TotalMoney totalMoneyUpdate = totalMoney.get();
+
+                        if (isPlus_uzs){
+                            totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                            totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                        }else {
+                            totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().subtract(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                            totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().subtract(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                        }
+
+                        if (isPlus_usd){
+                            totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                            totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                        }else {
+                            totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().subtract(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                            totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                        }
+                        messageCLassDto.setSuccess(new AtomicReference<>(true));
+                        messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari o'zgartirildi"));
+                    }else {
+                        messageCLassDto.setSuccess(new AtomicReference<>(false));
+                        messageCLassDto.setMessage(new AtomicReference<>("Kassa mablag'i yetarli emas!"));
+                    }
+                } else {
+                    if (isComFromTm_uzs && isComFromTm_usd){
+                        TotalMoney totalMoneyUpdate = totalMoney.get();
+
+                        if (isPlus_uzs){
+                            totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                        }else {
+                            totalMoneyUpdate.setTotalUzs(totalMoneyUpdate.getTotalUzs().subtract(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                        }
+
+                        if (isPlus_usd){
+                            totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                        }else {
+                            totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().subtract(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                        }
+
+                        totalMoneyRepository.save(totalMoneyUpdate);
+
+                        messageCLassDto.setSuccess(new AtomicReference<>(true));
+                        messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari o'zgartirildi"));
+                    }else {
+                        messageCLassDto.setSuccess(new AtomicReference<>(false));
+                        messageCLassDto.setMessage(new AtomicReference<>("Kassa mablag'i yetarli emas!"));
+                    }
+                }
+            }
+        }
 
         return messageCLassDto;
     }

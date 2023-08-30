@@ -55,15 +55,14 @@
 
                         <div class="col-sm-12 d-flex justify-content-center">
                             <div class="form-check mx-2">
-                                <input type="checkbox" class="form-check-input noChangeUzs" id="noChangeUzs" required>
-                                <label class="form-check-label" for="noChangeUzs">(UZS) ayrish</label>
+                                <input type="checkbox" class="form-check-input minusUzs" id="minusUzs" required>
+                                <label class="form-check-label" for="minusUzs">(UZS) ayrish</label>
                             </div>
                             <div class="form-check mx-2">
-                                <input type="checkbox" class="form-check-input noChangeUsd" id="noChangeUsd" required>
-                                <label class="form-check-label" for="noChangeUsd">(USD) ayrish</label>
+                                <input type="checkbox" class="form-check-input minusUsd" id="minusUsd" required>
+                                <label class="form-check-label" for="minusUsd">(USD) ayrish</label>
                             </div>
                         </div>
-
                         <div class="col-12">
                             <label for="comment" class="form-label">Izox</label>
                             <input type="text" class="form-control comment" id="comment" required>
@@ -77,18 +76,45 @@
                         </div>
                     </div>
                     <hr class="my-2">
+                    <h3 class="text-body-emphasis">Xududiy kassa holati</h3>
+                    <hr class="col-12 col-md-12 mb-2">
+                    <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
+                        <div class="col">
+                            <div class="card mb-4 rounded-3 border-warning shadow-sm">
+                                <div class="card-header py-3">
+                                    <h4 class="my-0 fw-normal text-warning">Xisobda mavjud</h4>
+                                </div>
+                                <div class="card-body">
+                                    <h2 class="card-title pricing-card-title currency-mask"><span class="currencyDisplaySom"></span><small class="text-body-secondary fw-light">/ uzs (so'm)</small></h2>
+                                    <h2 class="card-title pricing-card-title currency-mask"><span class="currencyDisplayDollar"></span><small class="text-body-secondary fw-light">/ usd (dollar)</small></h2>
+                                    <ul class="list-unstyled mt-3 mb-4">
+                                        <li>Kassa: <span class="text-success region"></span></li>
+                                        <i class="bi-timer"></i> <span class="timerAndDate">00:00:00</span>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
         <script src="${pageContext.servletContext.contextPath}/resources/assets/custom/custom.js"></script>
         <script>
+            $(document).ready(function () {
+                page_admin_funcV1_02()
+            })
+
+            $('.cashRegister').on('change', function () {
+                page_admin_funcV1_02()
+            })
+
             function page_admin_funcV1_01() {
                 /**Kirimni saqlash**/
                 var params_page_admin_funcV1_01 = {
                     "moneyCostUzs" : $('.moneyCostUzs').val().replace(/\s/g, ''),
                     "moneyCostUsd" : $('.moneyCostUsd').val().replace(/\s/g, ''),
-                    "noChangeUzs" : $('.noChangeUzs').prop("checked"),
-                    "noChangeUsd" : $('.noChangeUsd').prop("checked"),
+                    "minusUzs" : $('.minusUzs').prop("checked"),
+                    "minusUsd" : $('.minusUsd').prop("checked"),
                     "cashRegister" : $('.cashRegister').val(),
                     "comment" : $('.comment').val(),
                 };
@@ -120,17 +146,27 @@
                                     handleValidationErrors(xhr);
                                 }
                                 else if (xhr.status === 200) {
-                                    Swal.fire({
-                                        position: 'center',
-                                        icon: 'success',
-                                        title: 'Saqlandi!',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                    handleValidationErrors(xhr);
-                                    clear_form1_1()
-                                    job_start_funcV1_01()
-                                    dt1.draw();
+                                    if (!xhr.responseJSON.success){
+                                        Swal.fire({
+                                            position: 'center',
+                                            icon: 'info',
+                                            title: 'Taqiqlangan!',
+                                            text: xhr.responseJSON.message,
+                                            showConfirmButton: false,
+                                            timer: 2000
+                                        });
+                                    }else {
+                                        Swal.fire({
+                                            position: 'center',
+                                            icon: 'success',
+                                            title: 'Saqlandi!',
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        page_admin_funcV1_02();
+                                        handleValidationErrors(xhr);
+                                        clear_form1_2()
+                                    }
                                 }
                                 else {
                                     Swal.fire('Ko\'zda tutilmagan xatolik!', '', 'info')
@@ -143,21 +179,50 @@
                     }
                 })
             }
+            function page_admin_funcV1_02() {
+                var formattedNumberUzs = 0.00;
+                var formattedNumberUsd = 0.00;
+                var params = {
+                    "locationId" : $('.cashRegister').val()
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "${pageContext.servletContext.contextPath}/route_v3/data_v3/chash_status_by_loc",
+                    data: params,
+                    beforeSend: function () {
+                    },
+                    accept: function () {
+                        $('.currencyDisplayDollar').text(0.00)
+                        $('.currencyDisplaySom').text(0.00)
+                    },
+                    success: function (response) {
+                        formattedNumberUzs = formatNumberWithThousandsSeparator(response.totalUzs);
+                        formattedNumberUsd = formatNumberWithThousandsSeparator(response.totalUsd);
+                        $('.currencyDisplaySom').text(formattedNumberUzs)
+                        $('.currencyDisplayDollar').text(formattedNumberUsd)
+                        $('.region').text(response.insLocationName + ';  kod: ' + response.insLocationCode)
+                    },
+                    error: function () {
+                        $('.currencyDisplayDollar').text(0.00)
+                        $('.currencyDisplaySom').text(0.00)
+                    }
+                });
+            }
 
             function handleValidationErrors(errors) {
                 /**Kirim ma'lumotlari validatsiyasi**/
                 ![undefined, null, ''].includes(errors.responseJSON.moneyCostUzs) ? $('.moneyCostUzs').addClass('is-invalid') : $('.moneyCostUzs').removeClass('is-invalid');
                 ![undefined, null, ''].includes(errors.responseJSON.moneyCostUsd) ? $('.moneyCostUsd').addClass('is-invalid') : $('.moneyCostUsd').removeClass('is-invalid');
-                ![undefined, null, ''].includes(errors.responseJSON.noChangeUzs) ? $('.noChangeUzs').addClass('is-invalid') : $('.noChangeUzs').removeClass('is-invalid');
-                ![undefined, null, ''].includes(errors.responseJSON.noChangeUsd) ? $('.noChangeUsd').addClass('is-invalid') : $('.noChangeUsd').removeClass('is-invalid');
+                ![undefined, null, ''].includes(errors.responseJSON.minusUzs) ? $('.minusUzs').addClass('is-invalid') : $('.minusUzs').removeClass('is-invalid');
+                ![undefined, null, ''].includes(errors.responseJSON.minusUsd) ? $('.minusUsd').addClass('is-invalid') : $('.minusUsd').removeClass('is-invalid');
                 ![undefined, null, ''].includes(errors.responseJSON.cashRegister) ? $('.cashRegister').addClass('is-invalid') : $('.cashRegister').removeClass('is-invalid');
                 ![undefined, null, ''].includes(errors.responseJSON.comment) ? $('.comment').addClass('is-invalid') : $('.comment').removeClass('is-invalid');
             }
             function clear_form1_2() {
                 $('.moneyCostUzs').removeClass('is-invalid').val('');
                 $('.moneyCostUsd').removeClass('is-invalid').val('');
-                $('.noChangeUzs').removeClass('is-invalid').prop('checked', false);
-                $('.noChangeUsd').removeClass('is-invalid').prop('checked', false);
+                $('.minusUzs').removeClass('is-invalid').prop('checked', false);
+                $('.minusUsd').removeClass('is-invalid').prop('checked', false);
                 $('.cashRegister').removeClass('is-invalid');
                 $('.comment').removeClass('is-invalid');
             }

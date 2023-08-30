@@ -83,7 +83,13 @@
                     if (response.success){
                         $(location).attr('href', '${pageContext.servletContext.contextPath}/');
                     }else {
-                        alert(response.message)
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'info',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                     }
                 },
                 error: function () {

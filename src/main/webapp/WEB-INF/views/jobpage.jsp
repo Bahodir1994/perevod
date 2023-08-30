@@ -65,8 +65,8 @@
       </ul>
 
       <form class="d-flex justify-content-between p-2">
-        <button type="submit" class="btn btn-secondary w-100 mx-2">Calculator</button>
-        <button type="submit" class="btn btn-secondary w-100 mx-2">Ishni yakunlash</button>
+        <button type="button" class="btn btn-secondary w-100 mx-2">Calculator</button>
+        <button type="button" class="btn btn-secondary w-100 mx-2" onclick="send_funcV1_03()">Ishni yakunlash</button>
       </form>
     </div>
     <div class="col-md-7 col-lg-8 ">
@@ -372,6 +372,67 @@
             }
           }
       });
+        }
+      });
+    }
+    function send_funcV1_03() {
+      /**Ishni yakunlash**/
+      Swal.fire({
+        title: 'Ishni yakunlashni tasdiqlaysizmi?',
+        showDenyButton: true,
+        confirmButtonText: 'Xa',
+        denyButtonText: `Yo'q`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: "GET",
+            url: '${pageContext.servletContext.contextPath}/route_v1/data_v4/job_page_finishing',
+            async: true,
+            beforeSend: function(xhr) {},
+            complete: function (xhr, status, error) {
+              if (xhr.status === 400) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: 'Ma\'lumotlarda xatolik bor!',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }
+              else if (xhr.status === 200) {
+                if (!xhr.responseJSON.success){
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'info',
+                    title: xhr.responseJSON.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                  })
+                } else { //success true
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Bajarildi!',
+                    text: xhr.responseJSON.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                  })
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                }
+              }
+              else {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'error',
+                  title: error,
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+              }
+            }
+          });
         }
       });
     }

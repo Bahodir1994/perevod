@@ -50,11 +50,29 @@ public class JobCheckerService {
 
             return criteriaBuilder.and(predicate1, predicate2);
         };
-        TotalMoney totalMoney = totalMoneyRepository.findOne(specification);
-        return totalMoney;
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification);
+        return totalMoney.orElseGet(TotalMoney::new);
     }
 
+    /**Get day data if work not start for Admin (status == 0)**/
+    public TotalMoney getJobData2(String locationId){
+        String statusNotStart = "0";
+        String statusStart = "1";
+        Specification<TotalMoney> specification = (root, query, criteriaBuilder) -> {
+            root.fetch("totalMoneyLogs", JoinType.LEFT);
+            root.fetch("transactionalMoneyList", JoinType.LEFT);
+            Predicate predicate1 = criteriaBuilder.equal(root.get("insLocationCode"), locationId);
+            Predicate predicate2 = criteriaBuilder.equal(root.get("status"), statusNotStart);
+            Predicate predicate3 = criteriaBuilder.equal(root.get("status"), statusStart);
+            Predicate predicateOr = criteriaBuilder.or(predicate2, predicate3);
 
+            return criteriaBuilder.and(predicate1, predicateOr);
+        };
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification);
+        return totalMoney.orElseGet(TotalMoney::new);
+    }
+
+    /**Start job day cash**/
     public MessageCLassDto setTotalMoney(Users users){
         AtomicReference<String> message = new AtomicReference<>("Xisob mavjud emas!");
         AtomicReference<Boolean> success = new AtomicReference<>(false);
@@ -62,7 +80,6 @@ public class JobCheckerService {
         String statusStart = "1";
         totalMoneyRepository.findByInsLocationCodeAndStatus(users.getLocationCode(), statusNotStart).ifPresent(
                 totalMoney -> {
-
                     if (totalMoney.getTotalUzs().compareTo(new BigDecimal(50000)) > 0 || totalMoney.getTotalUsd().compareTo(new BigDecimal(50)) > 0){
                         totalMoney.setStatus(statusStart); /*job starting*/
                         totalMoney.setStartTime(new Date()); /*job starting*/
@@ -91,6 +108,47 @@ public class JobCheckerService {
                 message,
                 success
         );
+    }
+
+    /**Finish job day cash**/
+    public MessageCLassDto finishJobDay(Users users){
+        MessageCLassDto messageCLassDto = new MessageCLassDto();
+        String statusStart = "1";
+        Specification<TotalMoney> specification = (root, query, criteriaBuilder) -> {
+            root.fetch("totalMoneyLogs", JoinType.LEFT);
+            root.fetch("transactionalMoneyList", JoinType.LEFT);
+            Predicate predicate1 = criteriaBuilder.equal(root.get("insLocationCode"), users.getLocationCode());
+            Predicate predicate2 = criteriaBuilder.equal(root.get("status"), statusStart);
+
+            return criteriaBuilder.and(predicate1, predicate2);
+        };
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification);
+        totalMoney.ifPresentOrElse(
+                totalMoney1 -> {
+                    totalMoney1.setStatus("2");
+                    totalMoney1.setFinishTime(new Date(System.currentTimeMillis()));
+                    totalMoneyRepository.save(totalMoney1);
+
+                    TotalMoneyLog totalMoneyLog = totalMoney1.getTotalMoneyLogs().get(0);
+                    totalMoneyLog.setStatus("2");
+                    totalMoneyLogRepository.save(totalMoneyLog);
+
+                    TotalMoney totalMoney2 = new TotalMoney();
+                    totalMoney2.setTotalUzs(totalMoneyLog.getTotalMoneyUzs());
+                    totalMoney2.setTotalUsd(totalMoneyLog.getTotalMoneyUsd());
+                    totalMoney2.setInsLocationCode(totalMoney1.getInsLocationCode());
+                    totalMoney2.setInsLocationName(totalMoney1.getInsLocationName());
+                    totalMoneyRepository.save(totalMoney2);
+
+                    messageCLassDto.setSuccess(new AtomicReference<>(true));
+                    messageCLassDto.setMessage(new AtomicReference<>("Mazkur xisob raqam yopildi!"));
+                },
+                () -> {
+                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                    messageCLassDto.setMessage(new AtomicReference<>("Yopish uchun xisob raqam mavjud emas!"));
+                }
+        );
+        return messageCLassDto;
     }
 
 }
