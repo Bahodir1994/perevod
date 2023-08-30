@@ -49,8 +49,7 @@ public class ControllerAdmin {
             return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
         }
 
-        Users users = securedUserData.getSecuredUserParams(userDetails);
-        appService1.changeTotalMoney(cashRegister, users);
+        appService1.changeTotalMoney(cashRegister);
         return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
     }
 }

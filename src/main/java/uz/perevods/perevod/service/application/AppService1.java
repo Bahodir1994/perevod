@@ -259,7 +259,8 @@ public class AppService1 {
     }
 
     /**add total money or subtract total money**/
-    public void changeTotalMoney(CashRegister cashRegister, Users users){
+    public MessageCLassDto changeTotalMoney(CashRegister cashRegister){
+        MessageCLassDto messageCLassDto = new MessageCLassDto();
         String locationCode = cashRegister.getCashRegister();
         String statusTotalMoneyActive = "1";
         String statusTotalMoneyNotActive = "0";
@@ -273,19 +274,71 @@ public class AppService1 {
             Predicate predicateOr = criteriaBuilder.or(predicate1, predicate2);
             return criteriaBuilder.and(predicate3, predicateOr);
         };
-        Optional<TotalMoney> totalMoney = totalMoneyRepository.findSpecific(specification1);
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findAll(specification1);
+
+        boolean isPlus_uzs = cashRegister.getMinusUzs();
+        boolean isPlus_usd = cashRegister.getMinusUsd();
+
+        boolean isComFromTm_uzs = false;
+        boolean isComFromTm_usd = false;
+
+        boolean isComFromTmLog_uzs = false;
+        boolean isComFromTmLog_usd = false;
+
+        boolean isTotalMoneyActive_uzs = false;
+        boolean isTotalMoneyActive_usd = false;
+
+
+
 
         totalMoney.ifPresentOrElse(
                 totalMoney1 -> {
                     if (!cashRegister.getMinusUzs()){
+                        totalMoney1.setTotalUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
 
-                    }else {
+                        messageCLassDto.setMessage(new AtomicReference<>("(UZS) saqlandi!; "));
+                        messageCLassDto.setSuccess(new AtomicReference<>(true));
+                    }else { // (usd) need subtract by currect money
+                        if (totalMoney1.getTotalUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0) {
+                            totalMoney1.setTotalUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
 
+                            messageCLassDto.setMessage(new AtomicReference<>("(UZS) saqlandi!; "));
+                            messageCLassDto.setSuccess(new AtomicReference<>(true));
+                        }else {
+                            messageCLassDto.setSuccess(new AtomicReference<>(false));
+                            messageCLassDto.setMessage(new AtomicReference<>("(UZS) yetarli emas!; "));
+                        }
                     }
-
+                    /********************************/
                     if (!cashRegister.getMinusUsd()){
+                        totalMoney1.setTotalUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
 
-                    }else {
+                        messageCLassDto.setMessage(new AtomicReference<>(messageCLassDto.getMessage() + "(USD) saqlandi!; "));
+                        messageCLassDto.setSuccess(new AtomicReference<>(true));
+                    }else { // (usd) need subtract by currect money
+                        if (totalMoney1.getTotalUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0) {
+                            totalMoney1.setTotalUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                            messageCLassDto.setMessage(new AtomicReference<>("(USD) saqlandi!; "));
+                            messageCLassDto.setSuccess(new AtomicReference<>(true));
+                        }
+                        else {
+                            messageCLassDto.setSuccess(new AtomicReference<>(false));
+                            messageCLassDto.setMessage(new AtomicReference<>(messageCLassDto.getMessage() + "(USD) yetarli emas!"));
+                        }
+                    }
+                    if (totalMoney1.getStatus().equals("0")){ // equals: 0 and this not active
+                        messageCLassDto.setMessageSecond(new AtomicReference<>("Aktiv bo'lmagan kunlik kassaga o'zgartirish kiritildi!"));
+                    }else { // equals: 1 and this active
+                        TotalMoneyLog totalMoneyLog = totalMoney1.getTotalMoneyLogs().get(0);
+                        totalMoneyLog.setTotalMoneyUzs(totalMoney1.getTotalUzs().add(new BigDecimal(cashRegister.getMoneyCostUzs())));
+                        totalMoneyLog.setTotalMoneyUsd(totalMoney1.getTotalUsd().add(new BigDecimal(cashRegister.getMoneyCostUsd())));
+                        totalMoneyLogRepository.save(totalMoneyLog);
+                        messageCLassDto.setMessageSecond(new AtomicReference<>("Aktiv bo'lgan kunlik kassaga o'zgartirish kiritildi!"));
+                    }
+                    /**Save if all correct else not**/
+                    if (messageCLassDto.getSuccess().get()){
+                        totalMoneyRepository.save(totalMoney1);
+
 
                     }
                 },
@@ -296,10 +349,12 @@ public class AppService1 {
                     totalMoneyNew.setTotalUzs(new BigDecimal(cashRegister.getMoneyCostUzs()));
                     totalMoneyNew.setTotalUsd(new BigDecimal(cashRegister.getMoneyCostUsd()));
                     totalMoneyRepository.save(totalMoneyNew);
-                    System.out.println("11");
+
+                    messageCLassDto.setSuccess(new AtomicReference<>(true));
+                    messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari yangi kiritildi"));
                 }
         );
 
-        System.out.println("calling");
+        return messageCLassDto;
     }
 }

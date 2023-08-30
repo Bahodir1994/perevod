@@ -15,4 +15,5 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MessageCLassDto {
     private AtomicReference<String> message;
     private AtomicReference<Boolean> success;
+    private AtomicReference<String> messageSecond;
 }
