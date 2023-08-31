@@ -120,7 +120,7 @@
                 };
 
                 Swal.fire({
-                    title: $('.sendToAddress').text() + ' kassaga mablag\' kiritishni tasdiqlaysizmi?',
+                    title: $('.sendToAddress').text() + " Kassaga mablag' kiritishni tasdiqlaysizmi?",
                     showDenyButton: true,
                     confirmButtonText: 'Xa',
                     denyButtonText: `Yo'q`,
