@@ -17,20 +17,20 @@
   <div class="row">
     <div class="col-md-5 col-lg-4 order-sm-last">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-primary">Xisob raqam</span>
+        <span class="text-primary">Hisob raqam</span>
         <span class="text-danger">Qarz <span class="badge bg-primary rounded-pill debtCount">0</span></span>
       </h4>
       <ul class="list-group mb-3">
         <li class="list-group-item d-flex justify-content-between lh-sm">
           <div>
-            <h6 class="my-0 text-warning">Xisobda mavjud</h6>
+            <h6 class="my-0 text-warning">Hisobda mavjud</h6>
             <small class="text-body-secondary">(UZS) O'zbek so'mi</small>
           </div>
           <span class="text-body-secondary totalActiveUzs">0</span>
         </li>
         <li class="list-group-item d-flex justify-content-between lh-sm">
           <div>
-            <h6 class="my-0 text-warning">Xisobda mavjud</h6>
+            <h6 class="my-0 text-warning">Hisobda mavjud</h6>
             <small class="text-body-secondary">(USD) Aqsh dollari</small>
           </div>
           <span class="text-body-secondary text-success totalActiveUsd">0</span>
@@ -461,7 +461,7 @@
     function selectingSelectionByUserLocation(locationId) {
       var loc95To01 = '<option value="01">Toshkent</option>';
       var loc95To01Code = '01';
-      var loc01To95 = '<option value="95">Mangit</option>';
+      var loc01To95 = '<option value="95">Mang`it</option>';
       var loc01To95Code = '95';
       if (locationId === "01"){
         $('.sendToAddress').html(loc01To95);

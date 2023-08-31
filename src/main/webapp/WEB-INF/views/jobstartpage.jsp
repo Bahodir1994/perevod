@@ -18,7 +18,7 @@
                 <div class="col">
                     <div class="card mb-4 rounded-3 border-warning shadow-sm">
                         <div class="card-header py-3">
-                            <h4 class="my-0 fw-normal text-warning">Xisobda mavjud</h4>
+                            <h4 class="my-0 fw-normal text-warning">Hisobda mavjud</h4>
                         </div>
                         <div class="card-body">
                             <h2 class="card-title pricing-card-title currency-mask"><span class="currencyDisplaySom"></span><small class="text-body-secondary fw-light">/ uzs (so'm)</small></h2>
@@ -38,7 +38,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="text-body-emphasis">Ishni boshlash</h2>
-                    <p>Sizning xisobingizda (xududiy kassada) mablag' bo'lishi lozim. Aks xolda ishni boshlay olmaysiz, xisobni to'ldirish admin xuquqiga biriktirilgan.</p>
+                    <p>Sizning hisobingizda (hududiy kassada) mablag' bo'lishi lozim. Aks holda ishni boshlay olmaysiz, hisobni to'ldirish adminga murojaat qiling.</p>
                 </div>
             </div>
         </div>

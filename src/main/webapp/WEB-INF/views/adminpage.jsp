@@ -46,7 +46,7 @@
                             <label for="cashRegister" class="form-label">Xududiy kassa</label>
                             <select class="form-select cashRegister" id="cashRegister" required>
                                 <option value="01">Toshkent</option>
-                                <option value="95">Mangit</option>
+                                <option value="95">Mang`it</option>
                             </select>
                             <div class="invalid-feedback">
                                 Xududiy kassa tanlanmagan!
@@ -82,7 +82,7 @@
                         <div class="col">
                             <div class="card mb-4 rounded-3 border-warning shadow-sm">
                                 <div class="card-header py-3">
-                                    <h4 class="my-0 fw-normal text-warning">Xisobda mavjud</h4>
+                                    <h4 class="my-0 fw-normal text-warning">Hisobda mavjud</h4>
                                 </div>
                                 <div class="card-body">
                                     <h2 class="card-title pricing-card-title currency-mask"><span class="currencyDisplaySom"></span><small class="text-body-secondary fw-light">/ uzs (so'm)</small></h2>
@@ -120,7 +120,7 @@
                 };
 
                 Swal.fire({
-                    title: $('.sendToAddress').text() + ' кассага маблағ киритишни тасдиқлайсизми?',
+                    title: $('.sendToAddress').text() + ' kassaga mablag\' kiritishni tasdiqlaysizmi?',
                     showDenyButton: true,
                     confirmButtonText: 'Xa',
                     denyButtonText: `Yo'q`,

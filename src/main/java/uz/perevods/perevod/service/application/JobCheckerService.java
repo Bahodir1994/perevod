@@ -74,7 +74,7 @@ public class JobCheckerService {
 
     /**Start job day cash**/
     public MessageCLassDto setTotalMoney(Users users){
-        AtomicReference<String> message = new AtomicReference<>("Xisob mavjud emas!");
+        AtomicReference<String> message = new AtomicReference<>("Hisob mavjud emas!");
         AtomicReference<Boolean> success = new AtomicReference<>(false);
         String statusNotStart = "0";
         String statusStart = "1";
@@ -100,7 +100,7 @@ public class JobCheckerService {
                         success.set(true);
                         message.set("Kunlik mablag' yetarli va ish boshlandi!");
                     }else {
-                        message.set("Xisobda yetarli mablag' mavjud emas!");
+                        message.set("Hisobda yetarli mablag' mavjud emas!");
                     }
                 }
         );
@@ -141,11 +141,11 @@ public class JobCheckerService {
                     totalMoneyRepository.save(totalMoney2);
 
                     messageCLassDto.setSuccess(new AtomicReference<>(true));
-                    messageCLassDto.setMessage(new AtomicReference<>("Mazkur xisob raqam yopildi!"));
+                    messageCLassDto.setMessage(new AtomicReference<>("Mazkur hisob raqam yopildi!"));
                 },
                 () -> {
                     messageCLassDto.setSuccess(new AtomicReference<>(false));
-                    messageCLassDto.setMessage(new AtomicReference<>("Yopish uchun xisob raqam mavjud emas!"));
+                    messageCLassDto.setMessage(new AtomicReference<>("Yopish uchun hisob raqam mavjud emas!"));
                 }
         );
         return messageCLassDto;

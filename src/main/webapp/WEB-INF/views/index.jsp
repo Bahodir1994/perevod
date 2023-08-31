@@ -179,7 +179,7 @@
                         <a class="nav-link active" aria-current="page" onclick="app_funcV1_02()" href="#">AdminPanel</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Xisobot</a>
+                        <a class="nav-link" href="#">Hisobot</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Yangiliklar</a>

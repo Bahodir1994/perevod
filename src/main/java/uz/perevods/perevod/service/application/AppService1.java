@@ -98,7 +98,7 @@ public class AppService1 {
             message = "Bajarilid (uzs)!";
             status = true;
         }else {
-            message = "Xisobda mablag' yetarli emas!";
+            message = "Hisobda mablag' yetarli emas!";
         }
         return new MessageCLassDtoSimple(message, status);
     }
@@ -167,7 +167,7 @@ public class AppService1 {
                             messageCLassDto.setSuccess(new AtomicReference<>(false));
                             /*todo**->Locationi togri kemagani uchun berlomaydi**/
                         } else if(!noShortageOfMoney.get()){
-                            messageCLassDto.setMessage(new AtomicReference<>("Xisobda yetarli mablag' mavjud emas!"));
+                            messageCLassDto.setMessage(new AtomicReference<>("Hisobda yetarli mablag' mavjud emas!"));
                             messageCLassDto.setSuccess(new AtomicReference<>(false));
                             /*todo**->Puli yetmagani uchun berolmaydi**/
                         }
