@@ -43,13 +43,13 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="cashRegister" class="form-label">Xududiy kassa</label>
+                            <label for="cashRegister" class="form-label">Hududiy kassa</label>
                             <select class="form-select cashRegister" id="cashRegister" required>
                                 <option value="01">Toshkent</option>
                                 <option value="95">Mang`it</option>
                             </select>
                             <div class="invalid-feedback">
-                                Xududiy kassa tanlanmagan!
+                                Hududiy kassa tanlanmagan!
                             </div>
                         </div>
 
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <hr class="my-2">
-                    <h3 class="text-body-emphasis">Xududiy kassa holati</h3>
+                    <h3 class="text-body-emphasis">Hududiy kassa holati</h3>
                     <hr class="col-12 col-md-12 mb-2">
                     <div class="row row-cols-1 row-cols-md-1 mb-3 text-center">
                         <div class="col">
