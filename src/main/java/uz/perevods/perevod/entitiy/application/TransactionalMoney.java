@@ -45,6 +45,9 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Column(name = "payment_cost", length = 50)
     private BigDecimal paymentCost;
 
+    @Column(name = "payed_cost", length = 50)
+    private BigDecimal payedCost;
+
     @Column(name = "service_uzs", length = 50)
     private BigDecimal serviceUzs;
 
@@ -78,4 +81,11 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     @Column(name = "to_locationName", length = 50)
     private String insLocationName;
 
+
+    @PrePersist
+    private void initializeDefaultStatus() {
+        if (payedCost == null) {
+            payedCost = new BigDecimal(0); // or whatever default value you need
+        }
+    }
 }

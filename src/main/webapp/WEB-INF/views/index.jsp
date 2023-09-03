@@ -31,6 +31,7 @@
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/responsive.bootstrap4.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/fixedHeader.bootstrap4.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/select.dataTables.min.css" rel="stylesheet">
+        <link href="${pageContext.servletContext.contextPath}/resources/assets/css/buttons.dataTables.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/sweetalert2.min.css" rel="stylesheet">
 
         <style>
@@ -179,10 +180,13 @@
                         <a class="nav-link active" aria-current="page" onclick="app_funcV1_02()" href="#">AdminPanel</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link active" onclick="app_funcV1_03()" href="#">Qarzlar</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#">Hisobot</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Yangiliklar</a>
+                        <a class="nav-link active" onclick="informer1()" href="#">Yangiliklar</a>
                     </li>
                 </ul>
                 <div class="btn-group">
@@ -228,6 +232,7 @@
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.fixedHeader.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.colReorder.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.select.min.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.buttons.min.js"></script>
 
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery.spring-friendly.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/bootstrap.bundle.min.js"></script>
@@ -292,6 +297,61 @@
                     }
                 },
             });
+        }
+        function app_funcV1_03() {
+            $.ajax({
+                type: "GET",
+                url: "${pageContext.servletContext.contextPath}/route_v4/data_v1/debt_page",
+                beforeSend: function () {
+                },
+                complete: function (xhr, status, error) {
+                    if (xhr.status === 400) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Ma\'lumotlarda xatolik bor!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                    else if (xhr.status === 200) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Qarzdorliklar oynasi',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $("#mainApps").html(xhr.responseText);
+                    }
+                    else if (xhr.status === 403){
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Taqiqlangan!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                },
+            });
+        }
+
+        function informer1() {
+            Swal.fire({
+                title: '<strong>Markaziy bank <u>informeri</u></strong>',
+                icon: 'info',
+                html: '<a href="https://cbu.uz/" target="_blank" title="Ўзбекистон Республикаси Марказий банки"><img src="https://cbu.uz/oz/informer/?txtclr=212121&brdclr=FFC700&bgclr=FFE27D&r_choose=USD_EUR_RUB" alt=""></a>',
+                showCloseButton: true,
+                showCancelButton: true,
+                focusConfirm: false,
+                confirmButtonText:
+                    '<i class="bi bi-hand-thumbs-up"></i> Zo\'r!',
+                confirmButtonAriaLabel: 'Thumbs up, great!',
+                cancelButtonText:
+                    '<i class="bi bi-hand-thumbs-down"></i>',
+                cancelButtonAriaLabel: 'Thumbs down'
+            })
         }
     </script>
     </body>

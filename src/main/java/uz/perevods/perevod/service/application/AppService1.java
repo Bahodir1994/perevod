@@ -24,6 +24,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -109,11 +110,12 @@ public class AppService1 {
         transactionalMoney.setPhone(trMDto.getTelNumber());
         transactionalMoney.setPaymentCost(new BigDecimal(trMDto.getMoneyCost()));
         transactionalMoney.setPaymentCostType(trMDto.getMoneyType());
-        transactionalMoney.setServiceUzs(new BigDecimal(trMDto.getServiceMoney()));
+        transactionalMoney.setServiceUzs(trMDto.getServiceMoney().equals("") ? BigDecimal.ZERO : new BigDecimal(trMDto.getServiceMoney()));
         transactionalMoney.setInTime(new Date(System.currentTimeMillis()));
         transactionalMoney.setDebt(trMDto.getIsDebt());
         transactionalMoney.setInsLocationCode(trMDto.getSendToAddress());
         transactionalMoney.setInsLocationName(getLocationName(trMDto.getSendToAddress()));
+        transactionalMoney.setComment(trMDto.getComment());
         transactionalMoneyRepository.save(transactionalMoney);
     }
 
@@ -298,8 +300,8 @@ public class AppService1 {
             isComFromTm_uzs = totalMoneyOrg.getTotalUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0;
             isComFromTm_usd = totalMoneyOrg.getTotalUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0;
             if (totalMoneyOrg.getStatus().equals("1")){
-                isTotalMoneyActive_uzs = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0;
-                isTotalMoneyActive_usd = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0;
+                isComFromTmLog_uzs = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUzs().compareTo(new BigDecimal(cashRegister.getMoneyCostUzs())) > 0;
+                isComFromTmLog_usd = totalMoneyOrg.getTotalMoneyLogs().get(0).getTotalMoneyUsd().compareTo(new BigDecimal(cashRegister.getMoneyCostUsd())) > 0;
                 haveTotalMoneyLog = true;
             }
             haveTotalMoney = true;
@@ -366,6 +368,10 @@ public class AppService1 {
                             totalMoneyUpdate.setTotalUsd(totalMoneyUpdate.getTotalUsd().subtract(new BigDecimal(cashRegister.getMoneyCostUsd())));
                             totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(new BigDecimal(cashRegister.getMoneyCostUsd())));
                         }
+
+                        totalMoneyRepository.save(totalMoneyUpdate);
+                        totalMoneyLogRepository.save(totalMoneyLog);
+
                         messageCLassDto.setSuccess(new AtomicReference<>(true));
                         messageCLassDto.setMessage(new AtomicReference<>("Kassa ma'lumotlari o'zgartirildi"));
                     }else {

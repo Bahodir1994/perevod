@@ -6,7 +6,8 @@
   "lengthMenu": "_MENU_ ta",
   "loadingRecords": "Ma'lumotlar yuklanmoqda...",
   "processing": "<span class='fa-stack fa-lg'><i class='fas fa-spinner fa-spin fa-stack-2x fa-fw'></i></span>&nbsp;Yuklanmoqda...",
-  "search": "Izlash:",
+  "search": "",
+  "searchPlaceholder": "Izlash...",
   "zeroRecords": "Ma'lumot yo'q.",
   "paginate": {
     "first": "Birinchi",
@@ -18,4 +19,4 @@
     "sortAscending": ": to'g'ri tartiblash",
     "sortDescending": ": teskari tartiblash"
   }
-} 
+}

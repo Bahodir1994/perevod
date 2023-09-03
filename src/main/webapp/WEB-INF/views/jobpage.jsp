@@ -11,7 +11,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
 <head>
-    <title>JobPage</title>
+  <title>JobPage</title>
+  <style>
+  </style>
 </head>
 <body>
   <div class="row">
@@ -85,7 +87,7 @@
             <label for="telNumber" class="form-label">Tel.</label>
             <input type="text" class="form-control phoneInput telNumber" id="telNumber" required>
             <div class="invalid-feedback">
-              Tel raqam to'ldirilmagan!
+              Tel raqam to'g'ri to'ldirilmagan!
             </div>
           </div>
 
@@ -95,7 +97,7 @@
               <span class="input-group-text currencyIcon">@</span>
               <input type="text" class="form-control format-currency currency-mask moneyCost" id="moneyCost" required>
               <div class="invalid-feedback">
-                Xizmat puli to'ldirilmagan yoki xato!
+                Tranzaksiya puli to'ldirilmagan yoki xato!
               </div>
             </div>
           </div>
@@ -180,10 +182,7 @@
         type: 'GET'
       },
       serverSide: true,
-      dom: '<"row"<"col-sm-12 justify-content-end"f>>' +
-              '<"row"<"col-sm-12"t>>' +
-              '<"row"<"col-sm-12 d-flex justify-content-center"pr>>' +
-              '<"row"<"col-sm-6 col-md-6 text-start"l><"col-sm-5 col-md-5 text-end"i>>',
+      dom: 'Bfrtip',
       lengthMenu: [[10, 50, 100, -1], [10, 50, 100, 'Barcha']],
       columns: [
         {title: '№', className: 'text-center', sortable: false, searchable: false, orderable: false, name: 'column0', data: null, render: function (data, type, row, meta) {return meta.row + meta.settings._iDisplayStart + 1 +'.'}},
@@ -199,7 +198,7 @@
               return new Intl.DateTimeFormat('uz-UZ', options).format(dateS);
             } else return '<button class="btn btn-sm btn-outline-success w-100" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+"'"+row.fullName+"'"+')"><i class="bi bi-clipboard-check-fill"></i></button>';
           }},
-        {title: 'Kirim', className: 'text-center', name: 'column5', data: 'inTime', render: function (data, type, row, meta) {
+        {title: 'Kirim', className: 'text-left', name: 'column5', data: 'inTime', render: function (data, type, row, meta) {
             const dateS = data ? new Date(data) : null;
             if (dateS) {
               const options = {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'};
@@ -214,6 +213,13 @@
         {title: 'Xizmat', className: 'text-left', name: 'column6', data: 'serviceUzs', render: function (data, type, row, meta) {
             return formatNumberWithThousandsSeparator(data) + ' (uzs)';
           }},
+        {title: 'Yo\'nalish', className: 'text-left', name: 'column6', data: 'insLocationCode', render: function (data, type, row, meta) {
+            if (data === '01'){
+              return 'Mang\'it --> Toshkent'
+            }else { //else 95
+              return 'Toshkent --> Mang\'it'
+            }
+          }},
         {title: 'Izox', className: 'text-left', name: 'column6', data: 'comment'},
       ],
       language: {url: '${pageContext.servletContext.contextPath}/resources/assets/json/package_oz.json'},
@@ -227,7 +233,7 @@
         beforeSend: function () {
         },
         success: function (response) {
-          $('.debtCount').text(response.transactionalMoneyList.length)
+          $('.debtCount').text(response.transactionalMoneyList.filter((record) => record.paymentCost > record.payedCost).length)
 
           $('.totalActiveUzs').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUzs))
           $('.totalActiveUzsUsage').text(formatNumberWithThousandsSeparator(response.totalMoneyLogs[0].totalMoneyUzsGive))
@@ -248,7 +254,7 @@
       /**Kirimni saqlash**/
       var params_send_funcV1_01 = {
         "fullName" : $('.fullName').val(),
-        "telNumber" : $('.telNumber').val(),
+        "telNumber" : $('.telNumber').val().replaceAll('_', ''),
         "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
         "moneyType" : $('.moneyType').val(),
         "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
