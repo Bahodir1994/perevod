@@ -68,4 +68,12 @@ $(".phoneInput").on("input", function() {
 });
 
 
+/**close Nav**/
+document.querySelectorAll('.nav-link').forEach(function (element) {
+    element.addEventListener('click', function () {
+        // Close the Navbar by finding the button and simulating a click
+        document.querySelector('.navbar-toggler').click();
+    });
+});
+
 
