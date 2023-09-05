@@ -79,7 +79,6 @@
                 beforeSend: function () {
                 },
                 success: function (response) {
-                    console.log(response)
                     if (response.success){
                         $(location).attr('href', '${pageContext.servletContext.contextPath}/');
                     }else {

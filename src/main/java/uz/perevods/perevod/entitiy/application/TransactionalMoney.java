@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import uz.perevods.perevod.component.entityComponents.AbstractAuditingEntity;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class TransactionalMoney extends AbstractAuditingEntity {
     @Id
     @GeneratedValue(generator = "uuid4")
@@ -47,6 +49,9 @@ public class TransactionalMoney extends AbstractAuditingEntity {
 
     @Column(name = "payed_cost", length = 50)
     private BigDecimal payedCost;
+
+    @Column(name = "give_cost", length = 50)
+    private BigDecimal giveCost;
 
     @Column(name = "service_uzs", length = 50)
     private BigDecimal serviceUzs;
@@ -86,6 +91,9 @@ public class TransactionalMoney extends AbstractAuditingEntity {
     private void initializeDefaultStatus() {
         if (payedCost == null) {
             payedCost = new BigDecimal(0); // or whatever default value you need
+        }
+        if (giveCost == null) {
+            giveCost = new BigDecimal(0); // or whatever default value you need
         }
     }
 }

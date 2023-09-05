@@ -16,12 +16,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import uz.perevods.perevod.entitiy.application.TotalMoney;
 import uz.perevods.perevod.entitiy.application.TransactionalMoney;
+import uz.perevods.perevod.entitiy.application.TransactionalMoneyLog;
 import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.security.secureData.SecuredUserData;
 import uz.perevods.perevod.service.application.AppService1;
-import uz.perevods.perevod.service.helperClass.MessageCLassDto;
-import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
-import uz.perevods.perevod.service.helperClass.ValidationError;
+import uz.perevods.perevod.service.application.TransactionalMoneyLogService;
+import uz.perevods.perevod.service.helperClass.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -36,11 +36,13 @@ import java.util.stream.Collectors;
 public class DataController1 {
     private final SecuredUserData securedUserData;
     private final AppService1 appService1;
+    private final TransactionalMoneyLogService transactionalMoneyLogService;
 
 
     @GetMapping("/dataV1")
-    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput){
-        return appService1.getData1(tablesInput);
+    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput, @AuthenticationPrincipal UserDetails userDetails){
+        Users users = securedUserData.getSecuredUserParams(userDetails);
+        return appService1.getData1(tablesInput, users);
     }
 
     @GetMapping("/dataV2")
@@ -66,13 +68,27 @@ public class DataController1 {
 
     /**out money**/
     @PostMapping("/dataV4")
-    public ResponseEntity<Object> setData1(@RequestParam("value1") String value1, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated OutUsagingDto outUsagingDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails){
+        Map<String, String> errors;
+        if (bindingResult.hasErrors()) {
+            errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+
         Users users = securedUserData.getSecuredUserParams(userDetails);
         try {
-            MessageCLassDto messageCLassDto = appService1.setCheckOutMoney(users, value1);
+            MessageCLassDto messageCLassDto = appService1.setData1(outUsagingDto, users);
             return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
         }catch (Exception error) {
             return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**out money log**/
+    @GetMapping("/dataV5")
+    public DataTablesOutput<TransactionalMoneyLog> getData4(
+            @Valid DataTablesInput tablesInput
+    ){
+        return transactionalMoneyLogService.getData2(tablesInput);
     }
 }

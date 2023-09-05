@@ -41,4 +41,14 @@ public class TransactionalMoneyLog extends AbstractAuditingEntity {
 
     @Column(name = "comment", length = 600)
     private String comment;
+
+    @Column(name = "is_debt_history")
+    private Boolean isDebtHistory;
+
+    @PrePersist
+    private void initializeDefaultIsDebtHistory() {
+        if (isDebtHistory == null) {
+            isDebtHistory = true; // or whatever default value you need
+        }
+    }
 }

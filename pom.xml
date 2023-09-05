@@ -127,6 +127,12 @@
             <artifactId>libphonenumber</artifactId>
             <version>8.12.38</version> <!-- Версию можно обновить -->
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>

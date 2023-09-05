@@ -19,7 +19,7 @@
         <meta name="generator" content="Hugo 0.115.4">
         <title>Pul o'zkazmalari</title>
 
-        <link href="${pageContext.servletContext.contextPath}/resources/assets/css/jquery.dataTables.min.css" rel="stylesheet">
+<%--        <link href="${pageContext.servletContext.contextPath}/resources/assets/css/jquery.dataTables.min.css" rel="stylesheet">--%>
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/navbar-fixed.css" rel="stylesheet">
 
         <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/resources/assets/css/app.css">
@@ -223,6 +223,10 @@
     <main class="container" id="mainApps">
         <!--Content put here-->
     </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/color-modes.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery-3.7.0.js"></script>
 
@@ -244,6 +248,7 @@
 
         $(document).ready(function () {
             app_funcV1_01();
+            connect()
         })
         function app_funcV1_01() {
             $.ajax({
@@ -353,6 +358,92 @@
                 cancelButtonAriaLabel: 'Thumbs down'
             })
         }
+    </script>
+    <script>
+        var currentURL = window.location.href.replace('http://', '');
+        var port = window.location.port;
+
+        const urls = 'ws://'+currentURL+'gs-guide-websocket'
+        console.log("full url--> "+urls)
+        const stompClient = new StompJs.Client({
+            brokerURL: urls
+        });
+
+        <%--var socket = new SockJS('${pageContext.servletContext.contextPath}/gs-guide-websocket');--%>
+        <%--var stompClient = Stomp.over(socket);--%>
+
+        stompClient.onConnect = (frame) => {
+            setConnected(true);
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('${pageContext.servletContext.contextPath}/topic/greetings', (greeting) => {
+                showGreeting(JSON.parse(greeting.body).content);
+            });
+        };
+
+        stompClient.onWebSocketError = (error) => {
+            console.error('Error with websocket', error);
+        };
+
+        stompClient.onStompError = (frame) => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+        };
+
+        function setConnected(connected) {
+            $("#connect").prop("disabled", connected);
+            $("#disconnect").prop("disabled", !connected);
+            if (connected) {
+                $("#conversation").show();
+            }
+            else {
+                $("#conversation").hide();
+            }
+            $("#greetings").html("");
+        }
+
+        function connect() {
+            stompClient.activate();
+        }
+
+        function disconnect() {
+            stompClient.deactivate();
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendName() {
+            stompClient.publish({
+                destination: "${pageContext.servletContext.contextPath}/app/hello",
+                body: JSON.stringify({'name': 'update-success'})
+            });
+        }
+
+        function showGreeting(message) {
+            if (message === '1') { //success
+                if (typeof dt1 !== 'undefined' && dt1 !== null && typeof dt1.draw === 'function') {
+                    dt1.draw()
+                }
+                if (typeof dtD1 !== 'undefined' && dtD1 !== null && typeof dtD1.draw === 'function') {
+                    dtD1.draw();
+                }
+                // Повторите аналогичную проверку для dtD2 и job_start_funcV1_01
+                if (typeof dtD2 !== 'undefined' && dtD2 !== null && typeof dtD2.draw === 'function') {
+                    dtD2.draw();
+                }
+                if (typeof job_start_funcV1_01 === 'function') {
+                    job_start_funcV1_01();
+                }
+                if (typeof debt_funcV1_01 === 'function') {
+                    var checkStatus = $('.seeAll').prop('checked');
+                    debt_funcV1_01(checkStatus);
+                }
+            }
+        }
+
+        $(function () {
+            $( "#connect" ).click(() => connect());
+            $( "#disconnect" ).click(() => disconnect());
+        });
     </script>
     </body>
 </html>

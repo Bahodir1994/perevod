@@ -6,9 +6,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import uz.perevods.perevod.repository.application.TransactionalMoneyDataRepository;
-import uz.perevods.perevod.service.helperClass.CashRegister;
-import uz.perevods.perevod.service.helperClass.MessageCLassDto;
-import uz.perevods.perevod.service.helperClass.TransactionalMoneyDto;
+import uz.perevods.perevod.service.helperClass.*;
 import uz.perevods.perevod.entitiy.application.TotalMoney;
 import uz.perevods.perevod.entitiy.application.TotalMoneyLog;
 import uz.perevods.perevod.entitiy.application.TransactionalMoney;
@@ -16,7 +14,6 @@ import uz.perevods.perevod.entitiy.authorization.Users;
 import uz.perevods.perevod.repository.application.TotalMoneyLogRepository;
 import uz.perevods.perevod.repository.application.TotalMoneyRepository;
 import uz.perevods.perevod.repository.application.TransactionalMoneyRepository;
-import uz.perevods.perevod.service.helperClass.MessageCLassDtoSimple;
 
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.Join;
@@ -24,11 +21,9 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -39,10 +34,74 @@ public class AppService1 {
     private final TransactionalMoneyRepository transactionalMoneyRepository;
     private final TransactionalMoneyDataRepository transactionalMoneyDataRepository;
     private final TotalMoneyLogRepository totalMoneyLogRepository;
+    private final TransactionalMoneyLogService transactionalMoneyLogService;
 
-    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput){
+    public DataTablesOutput<TransactionalMoney> getData1(DataTablesInput tablesInput, Users users){
+        String outOrIn = tablesInput.getColumn("insLocationCode").getSearch().getValue();
+        String giveType = tablesInput.getColumn("outTime").getSearch().getValue();
+        String costType = tablesInput.getColumn("id").getSearch().getValue();
+        String inTime = tablesInput.getColumn("inTime").getSearch().getValue();
+        Date[] dates = dateRange(inTime);
 
-        DataTablesOutput<TransactionalMoney> transactionalMonies = transactionalMoneyDataRepository.findAll(tablesInput);
+        tablesInput.getColumn("insLocationCode").getSearch().setValue("");
+        tablesInput.getColumn("outTime").getSearch().setValue("");
+        tablesInput.getColumn("id").getSearch().setValue("");
+        tablesInput.getColumn("inTime").getSearch().setValue("");
+
+        Specification<TransactionalMoney> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Predicate predicate1_only_out = criteriaBuilder.equal(root.get("insLocationCode"), users.getLocationCode());
+            Predicate predicate2_only_in = criteriaBuilder.notEqual(root.get("insLocationCode"), users.getLocationCode());
+            Predicate predicate21_only_in_and_by_date = criteriaBuilder.between(root.get("inTime"), dates[0], dates[1]);
+
+            Predicate predicate3_only_give = criteriaBuilder.equal(root.get("paymentCost"), root.get("giveCost"));
+            Predicate predicate4_only_not_give = criteriaBuilder.equal(root.get("giveCost"), BigDecimal.ZERO);
+
+            Predicate predicate41_only_not_give_and_part_give = criteriaBuilder.equal(root.get("giveCost"), BigDecimal.ZERO);
+            Predicate predicate42_only_not_give_and_part_give = criteriaBuilder.greaterThan(root.get("paymentCost"), root.get("giveCost"));
+            Predicate predicate43_only_not_give_and_part_give = criteriaBuilder.greaterThan(root.get("giveCost"), BigDecimal.ZERO);
+
+            Predicate predicate51_only_part_give = criteriaBuilder.greaterThan(root.get("giveCost"), BigDecimal.ZERO);
+            Predicate predicate52_only_part_give = criteriaBuilder.greaterThan(root.get("paymentCost"), root.get("giveCost"));
+
+            Predicate predicate6_only_uzs = criteriaBuilder.greaterThan(root.get("paymentCostType"), "uzs");
+            Predicate predicate7_only_usd = criteriaBuilder.greaterThan(root.get("paymentCostType"), "usd");
+
+            if (outOrIn.equals("11")){
+                predicates.add(predicate1_only_out);
+            }
+            if (outOrIn.equals("12")){
+                predicates.add(predicate2_only_in);
+                predicates.add(predicate21_only_in_and_by_date);
+            }
+
+            if (giveType.equals("11")){
+                predicates.add(predicate3_only_give);
+            }
+            if (giveType.equals("12")){
+                predicates.add(predicate4_only_not_give);
+            }
+            if (giveType.equals("13")){
+                predicates.add(predicate51_only_part_give);
+                predicates.add(predicate52_only_part_give);
+            }
+            if (giveType.equals("14")){
+                Predicate predicateAnd2 = criteriaBuilder.and(predicate42_only_not_give_and_part_give, predicate43_only_not_give_and_part_give);
+                Predicate predicateAnd = criteriaBuilder.or(predicate41_only_not_give_and_part_give, predicateAnd2);
+                predicates.add(predicateAnd);
+            }
+
+            if (costType.equals("uzs")){
+                predicates.add(predicate6_only_uzs);
+            }
+            if (costType.equals("usd")){
+                predicates.add(predicate7_only_usd);
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        DataTablesOutput<TransactionalMoney> transactionalMonies = transactionalMoneyDataRepository.findAll(tablesInput, specification);
         return transactionalMonies;
     }
     public TotalMoney getData2(Users users){
@@ -119,7 +178,7 @@ public class AppService1 {
         transactionalMoneyRepository.save(transactionalMoney);
     }
 
-    /**out Money**/
+    /**out Money >>**/
     public MessageCLassDto setCheckOutMoney(Users users, String value1) {
         AtomicBoolean thatIsForUserLocation = new AtomicBoolean(false); //this user by location can not check out money
         AtomicBoolean noShortageOfMoney = new AtomicBoolean(false); // not enough money to transfer
@@ -181,12 +240,129 @@ public class AppService1 {
                 }
         );
         return messageCLassDto;
-    }
+    } /* deprecated */
     public void saveTransactionalMoneyOut(TransactionalMoney trMDto){
         trMDto.setOutTime(new Date(System.currentTimeMillis()));
         transactionalMoneyRepository.save(trMDto);
-    }
+    } /* deprecated */
 
+    public MessageCLassDto setData1(@Valid OutUsagingDto outUsagingDto, Users users) {
+        MessageCLassDto messageCLassDto = new MessageCLassDto();
+
+        Specification<TotalMoney> specification2 = (root, query, criteriaBuilder) -> {
+            root.fetch("totalMoneyLogs", JoinType.LEFT);
+            Predicate predicate1 = criteriaBuilder.equal(root.get("insLocationCode"), users.getLocationCode());
+            Predicate predicate2 = criteriaBuilder.equal(root.get("status"), "1"); // status 1 = active
+            return criteriaBuilder.and(predicate1, predicate2);
+        };
+        Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification2);
+        totalMoney.ifPresentOrElse(
+                totalMoney1 -> {
+                    TotalMoneyLog totalMoneyLog = totalMoney1.getTotalMoneyLogs().get(0);
+                    Optional<TransactionalMoney> transactionalMoney = transactionalMoneyRepository.findById(outUsagingDto.getTransactionalMoneyId());
+                    transactionalMoney.ifPresentOrElse(
+                            transactionalMoney1 -> {
+                                if (!transactionalMoney1.getInsLocationCode().equals(users.getLocationCode())){
+                                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                    messageCLassDto.setMessage(new AtomicReference<>("Siz chiqimni amalga oshira olmaysiz!"));
+                                } else if (transactionalMoney1.getPaymentCostType().equals("uzs")
+                                        && totalMoneyLog.getTotalMoneyUzs()
+                                        .compareTo(transactionalMoney1.getPaymentCost()) >= 0){
+                                    /*todo**->do subtract uzs*/
+                                    MessageCLassDto messageCLassDto1 = payAllOrNotAll(outUsagingDto, totalMoneyLog, transactionalMoney1);
+                                    messageCLassDto.setMessage(messageCLassDto1.getMessage());
+                                    messageCLassDto.setSuccess(messageCLassDto1.getSuccess());
+                                } else if (transactionalMoney1.getPaymentCostType().equals("usd")
+                                        && totalMoneyLog.getTotalMoneyUsd()
+                                        .compareTo(transactionalMoney1.getPaymentCost()) >= 0) {
+                                    /*todo**->do subtract usd*/
+                                    MessageCLassDto messageCLassDto1 = payAllOrNotAll(outUsagingDto, totalMoneyLog, transactionalMoney1);
+                                    messageCLassDto.setMessage(messageCLassDto1.getMessage());
+                                    messageCLassDto.setSuccess(messageCLassDto1.getSuccess());
+                                } else {
+                                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                    messageCLassDto.setMessage(new AtomicReference<>("Chiqim qilish uchun mablag' yetarli emas!"));
+                                }
+                            },
+                            () -> {
+                                messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                messageCLassDto.setMessage(new AtomicReference<>("Bunday chiqim mablag'i topilmadi!"));
+                            }
+                    );
+                },
+                () -> {
+                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                    messageCLassDto.setMessage(new AtomicReference<>("Chiqim qilish uchun aktiv kassa mavjud emas!"));
+                }
+        );
+        return messageCLassDto;
+    }
+    public MessageCLassDto payAllOrNotAll(OutUsagingDto outUsagingDto, TotalMoneyLog totalMoneyLog, TransactionalMoney transactionalMoney) {
+        MessageCLassDto messageCLassDto = new MessageCLassDto();
+        if (outUsagingDto.getPayAll()) {
+            if (transactionalMoney.getPaymentCostType().equals("uzs")) {
+                totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().subtract(transactionalMoney.getPaymentCost().subtract(transactionalMoney.getGiveCost())));
+                totalMoneyLog.setTotalMoneyUzsGive(totalMoneyLog.getTotalMoneyUzsGive().add(transactionalMoney.getPaymentCost().subtract(transactionalMoney.getGiveCost())));
+            } else { // else usd
+                totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(transactionalMoney.getPaymentCost().subtract(transactionalMoney.getGiveCost())));
+                totalMoneyLog.setTotalMoneyUsdGive(totalMoneyLog.getTotalMoneyUsdGive().add(transactionalMoney.getPaymentCost().subtract(transactionalMoney.getGiveCost())));
+            }
+            totalMoneyLogRepository.save(totalMoneyLog);
+            transactionalMoneyLogService
+                    .loggerForTransactionalMoneyLogForOut(
+                            transactionalMoney.getId(),
+                            transactionalMoney.getPaymentCost().compareTo(transactionalMoney.getGiveCost()) == 0 ? String.valueOf(transactionalMoney.getGiveCost()) : String.valueOf(transactionalMoney.getPaymentCost().subtract(transactionalMoney.getGiveCost())),
+                            outUsagingDto.getComment()
+                    );
+            transactionalMoney.setGiveCost(transactionalMoney.getPaymentCost());
+            transactionalMoneyRepository.save(transactionalMoney);
+
+            messageCLassDto.setSuccess(new AtomicReference<>(true));
+            messageCLassDto.setMessage(new AtomicReference<>("Chiqim to'liq bajarildi"));
+        } else { // else payAll false
+            if (transactionalMoney.getPaymentCost().compareTo(transactionalMoney.getGiveCost().add(new BigDecimal(outUsagingDto.getMoneyCost()))) > 0) {
+                transactionalMoney.setGiveCost(transactionalMoney.getGiveCost().add(new BigDecimal(outUsagingDto.getMoneyCost())));
+                if (transactionalMoney.getPaymentCostType().equals("uzs")) {
+                    totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().subtract(new BigDecimal(outUsagingDto.getMoneyCost())));
+                    totalMoneyLog.setTotalMoneyUzsGive(totalMoneyLog.getTotalMoneyUzsGive().add(new BigDecimal(outUsagingDto.getMoneyCost())));
+                } else { // else usd
+                    totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(new BigDecimal(outUsagingDto.getMoneyCost())));
+                    totalMoneyLog.setTotalMoneyUsdGive(totalMoneyLog.getTotalMoneyUsdGive().add(new BigDecimal(outUsagingDto.getMoneyCost())));
+                }
+                transactionalMoneyRepository.save(transactionalMoney);
+                totalMoneyLogRepository.save(totalMoneyLog);
+                transactionalMoneyLogService
+                        .loggerForTransactionalMoneyLogForOut(
+                                transactionalMoney.getId(),
+                                outUsagingDto.getMoneyCost(),
+                                outUsagingDto.getComment()
+                        );
+                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                messageCLassDto.setMessage(new AtomicReference<>("Chiqim qisman berildi"));
+            } else if (transactionalMoney.getPaymentCost().compareTo(transactionalMoney.getGiveCost().add(new BigDecimal(outUsagingDto.getMoneyCost()))) == 0) {
+                transactionalMoney.setGiveCost(transactionalMoney.getGiveCost().add(new BigDecimal(outUsagingDto.getMoneyCost())));
+                if (transactionalMoney.getPaymentCostType().equals("uzs")) {
+                    totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().subtract(transactionalMoney.getPaymentCost()));
+                    totalMoneyLog.setTotalMoneyUzsGive(totalMoneyLog.getTotalMoneyUzsGive().add(transactionalMoney.getPaymentCost()));
+                } else { // else usd
+                    totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(transactionalMoney.getPaymentCost()));
+                    totalMoneyLog.setTotalMoneyUsdGive(totalMoneyLog.getTotalMoneyUsdGive().add(transactionalMoney.getPaymentCost()));
+                }
+                transactionalMoneyRepository.save(transactionalMoney);
+                totalMoneyLogRepository.save(totalMoneyLog);
+                transactionalMoneyLogService.loggerForTransactionalMoneyLog(transactionalMoney.getId(), outUsagingDto.getMoneyCost(), outUsagingDto.getComment());
+
+                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                messageCLassDto.setMessage(new AtomicReference<>("Chiqim to'liq berildi"));
+            } else { //else equal less
+                messageCLassDto.setSuccess(new AtomicReference<>(false));
+                messageCLassDto.setMessage(new AtomicReference<>("Kiritilgan qiymat chiqim mablag'idan katta!"));
+            }
+        }
+        return messageCLassDto;
+    }
+    /**out Money <<**/
+    
     /**plus money or minus money by inOrOut param**/
     public void saveTotalMoneyLog(Users users, TotalMoney totalMoney, TransactionalMoneyDto trMDto, TransactionalMoney transactionalMoney, String inOrOut){
         if (inOrOut.equals("in")){
@@ -260,6 +436,29 @@ public class AppService1 {
             return "Mang'it";
         }
         return null;
+    }
+    private Date[] dateRange(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = dateFormat.parse(dateString);
+
+            // Set the time to 00:00:00 for the start of the day
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+
+            // Create the end date by setting the time to 23:59:59
+            Date endDate = new Date(date.getTime());
+            endDate.setHours(23);
+            endDate.setMinutes(59);
+            endDate.setSeconds(59);
+
+            // Return an array containing the start and end dates
+            return new Date[] { date, endDate };
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date[] { new Date(System.currentTimeMillis()) };
+        }
     }
 
     /**add total money or subtract total money**/
