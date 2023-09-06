@@ -567,7 +567,7 @@
           }
 
           Swal.fire({
-            title: params_send_funcV1_01.fullName + ' маблағини қабул қилишни тасдиқлайсизми?',
+            title: params_send_funcV1_01.fullName + " mablag'ini qabul qilishni tasdiqlaysizmi?",
             showDenyButton: true,
             confirmButtonText: 'Xa',
             denyButtonText: `Yo'q`,
@@ -647,7 +647,7 @@
             "payAll" : true,
           }
           Swal.fire({
-            title: fullName + ' маблағини беришни тасдиқлайсизми?',
+            title: fullName + " mablag'ini berishni tasdiqlaysizmi?",
             showDenyButton: true,
             confirmButtonText: 'Xa',
             denyButtonText: `Yo'q`,
