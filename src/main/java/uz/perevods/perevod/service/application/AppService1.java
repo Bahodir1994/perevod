@@ -297,7 +297,7 @@ public class AppService1 {
                                         }
                                     } else {
                                         messageCLassDto.setSuccess(new AtomicReference<>(false));
-                                        messageCLassDto.setMessage(new AtomicReference<>("Kirim chiqim operatsiyalari amalga oshirilgan! (O'zgartirish taqiqlangan!)"));
+                                        messageCLassDto.setMessage(new AtomicReference<>("Kirim chiqim operatsiyalari amalga oshirilgan! (O'zgartirish ta'qiqlangan!)"));
                                     }
                                 }
                             },
