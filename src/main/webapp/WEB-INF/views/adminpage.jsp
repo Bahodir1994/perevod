@@ -95,6 +95,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <hr class="my-2">
+                    <h3 class="text-body-emphasis">Kassa xodimlar o'rnini almashtirish</h3>
+                    <button  type="button" class="btn btn-outline-success w-100" onclick="page_admin_funcV1_03()"><i class="bi bi-recycle"></i>  Almashtirishni amalga oshirish</button>
+                    <hr class="col-3 col-md-2 mb-3">
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <p>Xodimlar almashinuvi amalga oshirilgach sizning oldingi hududiy kassadagi o'rningiz boshqa xodimga o'tadi va siz eski kassa bo'yicha o'zgartirishni amalga oshira olmaysiz!.</p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -205,6 +215,50 @@
                     error: function () {
                         $('.currencyDisplayDollar').text(0.00)
                         $('.currencyDisplaySom').text(0.00)
+                    }
+                });
+            }
+            function page_admin_funcV1_03() {
+                Swal.fire({
+                    title: " Almashtirishni tasdiqlaysizmi?",
+                    showDenyButton: true,
+                    confirmButtonText: 'Xa',
+                    denyButtonText: `Yo'q`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "GET",
+                            url: "${pageContext.servletContext.contextPath}/route_v3/data_v4/change_chash_persons_location",
+                            beforeSend: function () {
+                            },
+                            complete: function (xhr, status, error) {
+                                if (xhr.status === 400) {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'error',
+                                        title: 'Ma\'lumotlarda xatolik bor!',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                }
+                                else if (xhr.status === 200) {
+                                    Swal.fire({
+                                        position: 'center',
+                                        icon: 'success',
+                                        title: 'Bajarildi!',
+                                        html: xhr.responseJSON.list,
+                                        showConfirmButton: true,
+                                        // timer: 1500
+                                    })
+                                }
+                                else {
+                                    Swal.fire('Ko\'zda tutilmagan xatolik!', '', 'info')
+                                }
+                            }
+                        });
+                    } else if (result.isDenied) {
+                        // only close modal
+                        // Swal.fire('Saqlash bekor qilindi!', '', 'info')
                     }
                 });
             }

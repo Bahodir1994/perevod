@@ -139,13 +139,6 @@
                 </div>
               </div>
 
-              <div class="col-sm-6">
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input isDebtBook" id="isDebtBook" required>
-                  <label class="form-check-label" for="isDebtBook">Alohida Qarz</label>
-                </div>
-              </div>
-
               <div class="col-12">
                 <label for="comment" class="form-label">Izox</label>
                 <input type="text" class="form-control comment" id="comment" required>
@@ -155,7 +148,7 @@
 
             <div class="row py-2">
               <div class="col-sm-12 d-flex justify-content-between">
-                <button class="btn btn-primary w-100 mx-2" onclick="send_funcV1_01()" type="button"><i class="bi bi-download"></i> Saqlash</button>
+                <button class="btn btn-primary w-100 mx-2" onclick="send_funcV1_01('POST')" type="button"><i class="bi bi-download"></i> Saqlash</button>
                 <button class="btn btn-success w-100 mx-2" onclick="clear_form1_1()" type="button"><i class="bi bi-arrow-clockwise"></i> Yangilash</button>
               </div>
             </div>
@@ -230,6 +223,113 @@
             <div class="modal-body">
               <table id="datatable2" class="table table-striped table-bordered responsive" style="width: 100%!important;">
               </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal edit -->
+      <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalEditLabel">O'zgartirish/O'chirish</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="needs-validation" novalidate>
+                <div class="row g-3">
+                  <input type="hidden" class="mainId">
+                  <div class="col-sm-6">
+                    <label for="fullNameEdit" class="form-label">F.I.O</label>
+                    <input type="text" class="form-control fullNameEdit" id="fullNameEdit" required>
+                    <div class="invalid-feedback">
+                      F.I.O to'ldirilmagan!
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <label for="telNumberEdit" class="form-label">Tel.</label>
+                    <input type="text" class="form-control phoneInput telNumberEdit" id="telNumberEdit" required>
+                    <div class="invalid-feedback">
+                      Tel raqam to'g'ri to'ldirilmagan!
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <label for="moneyCostEdit" class="form-label">Tranzaksiya miqdori</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text currencyIcon">@</span>
+                      <input type="text" class="form-control format-currency currency-mask moneyCostEdit" id="moneyCostEdit" required>
+                      <div class="invalid-feedback">
+                        Tranzaksiya puli to'ldirilmagan yoki xato!
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="moneyTypeEdit" class="form-label">Valyuta</label>
+                    <select class="form-select moneyTypeEdit" id="moneyTypeEdit" required>
+                      <option value="uzs">So'm (uzs)</option>
+                      <option value="usd">Dollar (usd)</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Valyuta tanlanmagan!
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <label for="serviceMoneyEdit" class="form-label">Xizmat uchun</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text">uzs</span>
+                      <input type="text" class="form-control format-currency currency-mask serviceMoneyEdit" id="serviceMoneyEdit" required>
+                      <div class="invalid-feedback">
+                        Xizmat puli to'ldirilmagan yoki xato!
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <label for="sendToAddressEdit" class="form-label">Jo'natma manzili</label>
+                    <select class="form-select sendToAddressEdit" id="sendToAddressEdit" required disabled>
+                    </select>
+                    <div class="invalid-feedback">
+                      Jo'natma manzili tanlanmagan!
+                    </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input isDebtEdit" id="isDebtEdit" required>
+                      <label class="form-check-label" for="isDebtEdit">Qarzga berilmoqda</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="commentEdit" class="form-label">Izox</label>
+                    <input type="text" class="form-control commentEdit" id="commentEdit" required>
+                  </div>
+
+                </div>
+
+                <div class="row py-2">
+                  <div class="col-sm-12 d-flex justify-content-between">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                      <button type="button" onclick="send_funcV1_01('PUT')" class="btn btn-primary">Saqlash</button>
+                      <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="btn btn-danger dropdown-item" onclick="send_funcV1_01('DELETE')" href="#">O'chirish</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <button class="btn btn-success w-100 mx-2" onclick="clear_form2_1()" type="button"><i class="bi bi-arrow-clockwise"></i> Yangilash</button>
+                  </div>
+                </div>
+                <hr class="my-2">
+              </form>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
@@ -354,6 +454,19 @@
                 }
               }},
             {title: 'Izox', className: 'text-left', name: 'column9', data: 'comment'},
+            {
+              data: null,
+              className: 'text-left editor-edit',
+              orderable: false,
+              searchable: false,
+              sortable: false,
+              name: 'column10',
+              render: function (_, __, row) {// type 1 is edit, if 0 to delete
+                  const rowDataJson = JSON.stringify(row).replace(/"/g, '&quot;');
+                  return '<div style="cursor: pointer"><i onclick="send_funcV1_06('+rowDataJson+')" class="bi bi-pen-fill"></i></div>';
+                // <i onclick="send_funcV1_06('+"'"+rowDataJson+"'"+', 0)" class="bi bi-trash3-fill"></i>
+              }
+            }
           ],
           language: {url: '${pageContext.servletContext.contextPath}/resources/assets/json/package_oz.json'},
         });
@@ -424,18 +537,34 @@
           });
         }
 
-        function send_funcV1_01() {
+        function send_funcV1_01(type) {
           /**Kirimni saqlash**/
-          var params_send_funcV1_01 = {
-            "fullName" : $('.fullName').val(),
-            "telNumber" : $('.telNumber').val().replaceAll('_', ''),
-            "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
-            "moneyType" : $('.moneyType').val(),
-            "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
-            "sendToAddress" : $('.sendToAddress').val(),
-            "isDebt" : $('.isDebt').prop("checked"),
-            "comment" : $('.comment').val(),
-          };
+          var params_send_funcV1_01;
+          if (type === 'POST'){
+            params_send_funcV1_01 = {
+              "fullName" : $('.fullName').val(),
+              "telNumber" : $('.telNumber').val().replaceAll('_', ''),
+              "moneyCost" : $('.moneyCost').val().replace(/\s/g, ''),
+              "moneyType" : $('.moneyType').val(),
+              "serviceMoney" : $('.serviceMoney').val().replace(/\s/g, ''),
+              "sendToAddress" : $('.sendToAddress').val(),
+              "isDebt" : $('.isDebt').prop("checked"),
+              "comment" : $('.comment').val(),
+            };
+          }
+          if (type === 'PUT' || type === 'DELETE'){
+            params_send_funcV1_01 = {
+              "id" : $('.mainId').val(),
+              "fullName" : $('.fullNameEdit').val(),
+              "telNumber" : $('.telNumberEdit').val().replaceAll('_', ''),
+              "moneyCost" : $('.moneyCostEdit').val().replace(/\s/g, ''),
+              "moneyType" : $('.moneyTypeEdit').val(),
+              "serviceMoney" : $('.serviceMoneyEdit').val().replace(/\s/g, ''),
+              "sendToAddress" : $('.sendToAddressEdit').val(),
+              "isDebt" : $('.isDebtEdit').prop("checked"),
+              "comment" : $('.commentEdit').val(),
+            };
+          }
 
           Swal.fire({
             title: params_send_funcV1_01.fullName + ' маблағини қабул қилишни тасдиқлайсизми?',
@@ -445,7 +574,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               $.ajax({
-                type: "POST",
+                type: type,
                 url: '${pageContext.servletContext.contextPath}/route_v2/dataV3',
                 data: JSON.stringify(params_send_funcV1_01),
                 dataType: "json",
@@ -461,21 +590,43 @@
                       showConfirmButton: false,
                       timer: 1500
                     })
-                    handleValidationErrors(xhr);
+                    if (type === 'POST'){
+                      handleValidationErrors(xhr);
+                    }else {
+                      handleValidationEditErrors(xhr);
+                    }
                   }
                   else if (xhr.status === 200) {
-                    Swal.fire({
-                      position: 'center',
-                      icon: 'success',
-                      title: 'Saqlandi!',
-                      showConfirmButton: false,
-                      timer: 1500
-                    })
-                    handleValidationErrors(xhr);
-                    clear_form1_1()
-                    job_start_funcV1_01()
-                    dt1.draw();
-                    sendName()
+                    if (!xhr.responseJSON.success){
+                        Swal.fire({
+                          position: 'center',
+                          icon: 'info',
+                          title: xhr.responseJSON.message,
+                          showConfirmButton: false,
+                          timer: 2000
+                        })
+                    }
+                    else {
+                      Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                      })
+                      if (type === 'POST'){
+                        handleValidationErrors(xhr);
+                        clear_form1_1()
+                      }else {
+                        handleValidationEditErrors(xhr);
+                        $("#exampleModalEdit").modal("hide");
+                      }
+
+                      job_start_funcV1_01()
+                      dt1.draw();
+                      sendName()
+                    }
+
                   }
                   else {
                     Swal.fire('Ko\'zda tutilmagan xatolik!', '', 'info')
@@ -720,6 +871,26 @@
                   .columns('column5:name').search($('.inTime').val())
                   .draw();
         }
+        function send_funcV1_06(rowData) {
+          $("#exampleModalEdit").modal("show");
+
+            $('.mainId').val(rowData.id);
+            $('.fullNameEdit').val(rowData.fullName);
+            $('.telNumberEdit').val(rowData.phone);
+            $('.moneyCostEdit').val(formatNumberWithThousandsSeparator(rowData.paymentCost));
+            $('.moneyTypeEdit').val(rowData.paymentCostType);
+            $('.serviceMoneyEdit').val(rowData.serviceUzs);
+            var secondOptionLoc;
+            if (rowData.insLocationCode === '01'){
+                secondOptionLoc = '<option value="95">Mang\'it</option>'
+            } else { //else 95
+                secondOptionLoc = '<option value="01" selected>Toshkent</option>'
+            }  ;
+            $('.sendToAddressEdit').html('<option value="'+rowData.insLocationCode+'" selected>'+rowData.insLocationName+'</option>'+secondOptionLoc+'');
+            $('.isDebtEdit').prop("checked", rowData.debt);
+            $('.commentEdit').val(rowData.comment);
+          console.log(rowData)
+        }
 
         function handleValidationErrors(errors) {
           /**Kirim ma'lumotlari validatsiyasi**/
@@ -732,6 +903,17 @@
           ![undefined, null, ''].includes(errors.responseJSON.isDebt) ? $('.isDebt').addClass('is-invalid') : $('.isDebt').removeClass('is-invalid');
           ![undefined, null, ''].includes(errors.responseJSON.comment) ? $('.comment').addClass('is-invalid') : $('.comment').removeClass('is-invalid');
         }
+        function handleValidationEditErrors(errors) {
+          /**Kirim ma'lumotlari validatsiyasi**/
+          ![undefined, null, ''].includes(errors.responseJSON.fullName) ? $('.fullNameEdit').addClass('is-invalid') : $('.fullNameEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.telNumber) ? $('.telNumberEdit').addClass('is-invalid') : $('.telNumberEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.moneyCost) ? $('.moneyCostEdit').addClass('is-invalid') : $('.moneyCostEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.moneyType) ? $('.moneyTypeEdit').addClass('is-invalid') : $('.moneyTypeEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.serviceMoney) ? $('.serviceMoneyEdit').addClass('is-invalid') : $('.serviceMoneyEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.sendToAddress) ? $('.sendToAddressEdit').addClass('is-invalid') : $('.sendToAddressEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.isDebt) ? $('.isDebtEdit').addClass('is-invalid') : $('.isDebtEdit').removeClass('is-invalid');
+          ![undefined, null, ''].includes(errors.responseJSON.comment) ? $('.commentEdit').addClass('is-invalid') : $('.commentEdit').removeClass('is-invalid');
+        }
         function clear_form1_1() {
           $('.fullName').removeClass('is-invalid').val('');
           $('.telNumber').removeClass('is-invalid').val('');
@@ -741,6 +923,16 @@
           $('.sendToAddress').removeClass('is-invalid');
           $('.isDebt').removeClass('is-invalid').prop('checked', false);
           $('.comment').removeClass('is-invalid').val('');
+        }
+        function clear_form2_1() {
+          $('.fullNameEdit').removeClass('is-invalid');
+          $('.telNumberEdit').removeClass('is-invalid');
+          $('.moneyCostEdit').removeClass('is-invalid');
+          $('.moneyTypeEdit').removeClass('is-invalid');
+          $('.serviceMoneyEdit').removeClass('is-invalid');
+          $('.sendToAddressEdit').removeClass('is-invalid');
+          $('.isDebtEdit').removeClass('is-invalid');
+          $('.commentEdit').removeClass('is-invalid');
         }
         function selectingSelectionByUserLocation(locationId) {
           var loc95To01 = '<option value="01">Toshkent</option>';

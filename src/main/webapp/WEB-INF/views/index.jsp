@@ -32,6 +32,7 @@
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/fixedHeader.bootstrap4.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/select.dataTables.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/buttons.dataTables.min.css" rel="stylesheet">
+        <link href="${pageContext.servletContext.contextPath}/resources/assets/css/dataTables.dateTime.min.css" rel="stylesheet">
         <link href="${pageContext.servletContext.contextPath}/resources/assets/css/sweetalert2.min.css" rel="stylesheet">
 
         <style>
@@ -237,6 +238,7 @@
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.colReorder.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.select.min.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.buttons.min.js"></script>
+    <script src="${pageContext.servletContext.contextPath}/resources/assets/js/dataTables.dateTime.min.js"></script>
 
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/jquery.spring-friendly.js"></script>
     <script src="${pageContext.servletContext.contextPath}/resources/assets/js/bootstrap.bundle.min.js"></script>
@@ -360,10 +362,14 @@
         }
     </script>
     <script>
-        var currentURL = window.location.href.replace('http://', '');
+        var currentURL = window.location.href.replace(/^https?:\/\//, '');
         var port = window.location.port;
 
-        const urls = 'ws://'+currentURL+'gs-guide-websocket'
+        var urls = 'wss://'+currentURL.replace('?', '')+'gs-guide-websocket'
+        if (currentURL.indexOf("localhost") !== -1) {
+            urls = 'ws://'+currentURL.replace('?', '')+'gs-guide-websocket'
+        }
+
         console.log("full url--> "+urls)
         const stompClient = new StompJs.Client({
             brokerURL: urls

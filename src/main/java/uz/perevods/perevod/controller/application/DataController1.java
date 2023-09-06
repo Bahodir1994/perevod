@@ -51,9 +51,35 @@ public class DataController1 {
         TotalMoney totalMoney = appService1.getData2(users);
         return new ResponseEntity<>(totalMoney, HttpStatus.OK);
     }
-
-    /**in money**/
+/*******************************************************************************************/
+    /*todo--> in money >>*/
     @PostMapping("/dataV3")
+    public ResponseEntity<Object> postData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
+        Map<String, String> errors;
+        if (bindingResult.hasErrors()) {
+            errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+        Users users = securedUserData.getSecuredUserParams(userDetails);
+
+        appService1.setData1In(transactionalMoneyDto, users);
+        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
+    }
+
+    @PutMapping("/dataV3")
+    public ResponseEntity<Object> updateData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
+        Map<String, String> errors;
+        if (bindingResult.hasErrors()) {
+            errors = bindingResult.getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+        Users users = securedUserData.getSecuredUserParams(userDetails);
+
+        MessageCLassDto messageCLassDto = appService1.setData1InChange("put", transactionalMoneyDto, users);
+        return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/dataV3")
     public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated TransactionalMoneyDto transactionalMoneyDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
         Map<String, String> errors;
         if (bindingResult.hasErrors()) {
@@ -62,11 +88,12 @@ public class DataController1 {
         }
         Users users = securedUserData.getSecuredUserParams(userDetails);
 
-        appService1.setData1(transactionalMoneyDto, users);
-        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
+        MessageCLassDto messageCLassDto = appService1.setData1InChange("delete", transactionalMoneyDto, users);
+        return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
     }
-
-    /**out money**/
+    /*todo--> in money <<*/
+/*******************************************************************************************/
+    /*todo--> out money >>*/
     @PostMapping("/dataV4")
     public ResponseEntity<Object> setData1(@RequestBody @Valid @Validated OutUsagingDto outUsagingDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails){
         Map<String, String> errors;
@@ -77,18 +104,18 @@ public class DataController1 {
 
         Users users = securedUserData.getSecuredUserParams(userDetails);
         try {
-            MessageCLassDto messageCLassDto = appService1.setData1(outUsagingDto, users);
+            MessageCLassDto messageCLassDto = appService1.setData1Out(outUsagingDto, users);
             return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
         }catch (Exception error) {
             return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**out money log**/
+    /*todo--> out money <<**/
+/*******************************************************************************************/
+    /*todo--> out money log >>*/
     @GetMapping("/dataV5")
-    public DataTablesOutput<TransactionalMoneyLog> getData4(
-            @Valid DataTablesInput tablesInput
-    ){
+    public DataTablesOutput<TransactionalMoneyLog> getData4(@Valid DataTablesInput tablesInput){
         return transactionalMoneyLogService.getData2(tablesInput);
     }
+    /*todo--> out money log <<*/
 }

@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class TransactionalMoneyDto {
+    private String id;
 
     @NotBlank(message = "Bo'sh bo'lishi mumkun emas")
     @Size(max = 60, message = "Ma'lumot xajmi katta")
@@ -22,7 +23,7 @@ public class TransactionalMoneyDto {
     @Size(min = 12, max = 12, message = "Xato to'ldirilgan")
     private String telNumber;
 
-    @Pattern(regexp = "^\\d{1,15}(\\.\\d{1,2})?$|.{1,12}", message = "Format yoki xajm xato")
+    @Pattern(regexp = "^(?!-)(\\d{1,15}(\\.\\d{1,2})?|.{1,12})$", message = "Format yoki xajm xato")
     private String moneyCost;
 
     @NotBlank

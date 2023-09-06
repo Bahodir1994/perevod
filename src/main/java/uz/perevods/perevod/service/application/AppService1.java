@@ -65,8 +65,8 @@ public class AppService1 {
             Predicate predicate51_only_part_give = criteriaBuilder.greaterThan(root.get("giveCost"), BigDecimal.ZERO);
             Predicate predicate52_only_part_give = criteriaBuilder.greaterThan(root.get("paymentCost"), root.get("giveCost"));
 
-            Predicate predicate6_only_uzs = criteriaBuilder.greaterThan(root.get("paymentCostType"), "uzs");
-            Predicate predicate7_only_usd = criteriaBuilder.greaterThan(root.get("paymentCostType"), "usd");
+            Predicate predicate6_only_uzs = criteriaBuilder.equal(root.get("paymentCostType"), "uzs");
+            Predicate predicate7_only_usd = criteriaBuilder.equal(root.get("paymentCostType"), "usd");
 
             if (outOrIn.equals("11")){
                 predicates.add(predicate1_only_out);
@@ -132,8 +132,8 @@ public class AppService1 {
         return totalMoney;
     }
 
-    /**in Money**/
-    public MessageCLassDtoSimple setData1(TransactionalMoneyDto trMDto, Users users){
+    /*todo--> in Money >>*/
+    public MessageCLassDtoSimple setData1In(TransactionalMoneyDto trMDto, Users users){
         String totalMoneyStatusActive = "1";
         String totalMoneyLogStatusActive = "1";
         String message = null;
@@ -178,7 +178,145 @@ public class AppService1 {
         transactionalMoneyRepository.save(transactionalMoney);
     }
 
-    /**out Money >>**/
+    public MessageCLassDto setData1InChange(String type, TransactionalMoneyDto moneyDto, Users users) {
+        MessageCLassDto messageCLassDto = new MessageCLassDto();
+
+        Specification<TransactionalMoney> specification1 = (root, query, criteriaBuilder) -> {
+            Fetch<TransactionalMoney, TotalMoney> fetch1 = root.fetch("totalMoney", JoinType.LEFT);
+            fetch1.fetch("totalMoneyLogs", JoinType.LEFT);
+            Predicate predicate1 = criteriaBuilder.equal(root.get("id"), moneyDto.getId());
+            return criteriaBuilder.and(predicate1);
+        };
+        Optional<TransactionalMoney> transactionalMoney = transactionalMoneyRepository.findOne(specification1);
+        transactionalMoney.ifPresentOrElse(
+                transactionalMoney1 -> {
+                    Optional<TotalMoney> totalMoney;
+                    if (transactionalMoney1.getTotalMoney().getStatus().equals("1")){
+                        totalMoney = totalMoneyRepository.findById(transactionalMoney1.getTotalMoney().getId());
+                    }else {
+                        totalMoney = totalMoneyRepository.findByInsLocationCodeAndStatus(transactionalMoney1.getTotalMoney().getInsLocationCode(), "1");
+                    }
+                    totalMoney.ifPresentOrElse(
+                            totalMoney1 -> {
+                                if (!totalMoney1.getInsLocationCode().equals(users.getLocationCode())){
+                                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                    messageCLassDto.setMessage(new AtomicReference<>("Siz ushbu ma'lumotlarni o'zgartira olmaysiz!"));
+                                }else {
+                                    TotalMoneyLog totalMoneyLog = totalMoneyLogRepository.findByTotalMoneyId(totalMoney1.getId());
+                                    if (transactionalMoney1.getPaymentCostType().equals("uzs")
+                                            && transactionalMoney1.getPayedCost().compareTo(BigDecimal.ZERO) == 0
+                                            && transactionalMoney1.getGiveCost().compareTo(BigDecimal.ZERO) == 0
+                                    ) {
+                                        totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().subtract(transactionalMoney1.getPaymentCost()));
+                                        totalMoneyLog.setTotalMoneyUzsGive(totalMoneyLog.getTotalMoneyUzsGive().subtract(transactionalMoney1.getPaymentCost()));
+                                        totalMoneyLogRepository.save(totalMoneyLog);
+                                        if (type.equals("put")) {
+                                            if (moneyDto.getIsDebt()) {
+                                                transactionalMoney1.setFullName(moneyDto.getFullName());
+                                                transactionalMoney1.setPaymentCost(new BigDecimal(moneyDto.getMoneyCost()));
+                                                transactionalMoney1.setPaymentCostType(moneyDto.getMoneyType());
+                                                transactionalMoney1.setInsLocationCode(moneyDto.getSendToAddress());
+                                                transactionalMoney1.setInsLocationName(moneyDto.getSendToAddress().equals("01") ? "Toshkent" : "Mang'it");
+                                                transactionalMoney1.setServiceUzs(new BigDecimal(moneyDto.getServiceMoney()));
+                                                transactionalMoney1.setPhone(moneyDto.getTelNumber());
+                                                transactionalMoney1.setDebt(moneyDto.getIsDebt());
+                                                transactionalMoney1.setComment(moneyDto.getComment());
+                                                transactionalMoneyRepository.save(transactionalMoney1);
+
+                                                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                                messageCLassDto.setMessage(new AtomicReference<>("O'zgartirildi!"));
+                                            } else { // else not debt
+                                                transactionalMoney1.setFullName(moneyDto.getFullName());
+                                                transactionalMoney1.setPaymentCost(new BigDecimal(moneyDto.getMoneyCost()));
+                                                transactionalMoney1.setPaymentCostType(moneyDto.getMoneyType());
+                                                transactionalMoney1.setInsLocationCode(moneyDto.getSendToAddress());
+                                                transactionalMoney1.setInsLocationName(moneyDto.getSendToAddress().equals("01") ? "Toshkent" : "Mang'it");
+                                                transactionalMoney1.setServiceUzs(new BigDecimal(moneyDto.getServiceMoney()));
+                                                transactionalMoney1.setPhone(moneyDto.getTelNumber());
+                                                transactionalMoney1.setDebt(moneyDto.getIsDebt());
+                                                transactionalMoney1.setComment(moneyDto.getComment());
+                                                transactionalMoneyRepository.save(transactionalMoney1);
+
+                                                totalMoneyLog.setTotalMoneyUzs(totalMoneyLog.getTotalMoneyUzs().add(transactionalMoney1.getPaymentCost()));
+                                                totalMoneyLog.setTotalMoneyUzsGive(totalMoneyLog.getTotalMoneyUzsGive().add(transactionalMoney1.getPaymentCost()));
+                                                totalMoneyLogRepository.save(totalMoneyLog);
+
+                                                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                                messageCLassDto.setMessage(new AtomicReference<>("O'zgartirildi!"));
+                                            }
+                                        } else { // else delete
+                                            transactionalMoneyRepository.deleteById(transactionalMoney1.getId());
+                                            messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                            messageCLassDto.setMessage(new AtomicReference<>("O'chirildi!"));
+                                        }
+                                    } else if (transactionalMoney1.getPaymentCostType().equals("usd")
+                                            && transactionalMoney1.getPayedCost().compareTo(BigDecimal.ZERO) == 0
+                                            && transactionalMoney1.getGiveCost().compareTo(BigDecimal.ZERO) == 0
+                                    ) {
+                                        totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().subtract(transactionalMoney1.getPaymentCost()));
+                                        totalMoneyLog.setTotalMoneyUsdGive(totalMoneyLog.getTotalMoneyUsdGive().subtract(transactionalMoney1.getPaymentCost()));
+                                        totalMoneyLogRepository.save(totalMoneyLog);
+                                        if (type.equals("put")) {
+                                            if (moneyDto.getIsDebt()) {
+                                                transactionalMoney1.setFullName(moneyDto.getFullName());
+                                                transactionalMoney1.setPaymentCost(new BigDecimal(moneyDto.getMoneyCost()));
+                                                transactionalMoney1.setPaymentCostType(moneyDto.getMoneyType());
+                                                transactionalMoney1.setInsLocationCode(moneyDto.getSendToAddress());
+                                                transactionalMoney1.setInsLocationName(moneyDto.getSendToAddress().equals("01") ? "Toshkent" : "Mang'it");
+                                                transactionalMoney1.setServiceUzs(new BigDecimal(moneyDto.getServiceMoney()));
+                                                transactionalMoney1.setPhone(moneyDto.getTelNumber());
+                                                transactionalMoney1.setDebt(moneyDto.getIsDebt());
+                                                transactionalMoney1.setComment(moneyDto.getComment());
+                                                transactionalMoneyRepository.save(transactionalMoney1);
+
+                                                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                                messageCLassDto.setMessage(new AtomicReference<>("O'zgartirildi!"));
+                                            } else { // else not debt
+                                                transactionalMoney1.setFullName(moneyDto.getFullName());
+                                                transactionalMoney1.setPaymentCost(new BigDecimal(moneyDto.getMoneyCost()));
+                                                transactionalMoney1.setPaymentCostType(moneyDto.getMoneyType());
+                                                transactionalMoney1.setInsLocationCode(moneyDto.getSendToAddress());
+                                                transactionalMoney1.setInsLocationName(moneyDto.getSendToAddress().equals("01") ? "Toshkent" : "Mang'it");
+                                                transactionalMoney1.setServiceUzs(new BigDecimal(moneyDto.getServiceMoney()));
+                                                transactionalMoney1.setPhone(moneyDto.getTelNumber());
+                                                transactionalMoney1.setDebt(moneyDto.getIsDebt());
+                                                transactionalMoney1.setComment(moneyDto.getComment());
+                                                transactionalMoneyRepository.save(transactionalMoney1);
+
+                                                totalMoneyLog.setTotalMoneyUsd(totalMoneyLog.getTotalMoneyUsd().add(transactionalMoney1.getPaymentCost()));
+                                                totalMoneyLog.setTotalMoneyUsdGive(totalMoneyLog.getTotalMoneyUsdGive().add(transactionalMoney1.getPaymentCost()));
+                                                totalMoneyLogRepository.save(totalMoneyLog);
+
+                                                messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                                messageCLassDto.setMessage(new AtomicReference<>("O'zgartirildi!"));
+                                            }
+                                        } else { // else delete
+                                            transactionalMoneyRepository.deleteById(transactionalMoney1.getId());
+                                            messageCLassDto.setSuccess(new AtomicReference<>(true));
+                                            messageCLassDto.setMessage(new AtomicReference<>("O'chirildi!"));
+                                        }
+                                    } else {
+                                        messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                        messageCLassDto.setMessage(new AtomicReference<>("Kirim chiqim operatsiyalari amalga oshirilgan! (O'zgartirish taqiqlangan!)"));
+                                    }
+                                }
+                            },
+                            () -> {
+                                messageCLassDto.setSuccess(new AtomicReference<>(false));
+                                messageCLassDto.setMessage(new AtomicReference<>("Aktiv kassa topilmadi!"));
+                            }
+                    );
+                },
+                () -> {
+                    messageCLassDto.setSuccess(new AtomicReference<>(false));
+                    messageCLassDto.setMessage(new AtomicReference<>("Siz jo'natgan parametrlar bo'yicha ma'lumot topilmadi!"));
+                }
+        );
+        return messageCLassDto;
+    }
+    /*todo--> in Money <<*/
+
+    /*todo--> out Money >>*/
     public MessageCLassDto setCheckOutMoney(Users users, String value1) {
         AtomicBoolean thatIsForUserLocation = new AtomicBoolean(false); //this user by location can not check out money
         AtomicBoolean noShortageOfMoney = new AtomicBoolean(false); // not enough money to transfer
@@ -246,7 +384,7 @@ public class AppService1 {
         transactionalMoneyRepository.save(trMDto);
     } /* deprecated */
 
-    public MessageCLassDto setData1(@Valid OutUsagingDto outUsagingDto, Users users) {
+    public MessageCLassDto setData1Out(@Valid OutUsagingDto outUsagingDto, Users users) {
         MessageCLassDto messageCLassDto = new MessageCLassDto();
 
         Specification<TotalMoney> specification2 = (root, query, criteriaBuilder) -> {
@@ -361,9 +499,9 @@ public class AppService1 {
         }
         return messageCLassDto;
     }
-    /**out Money <<**/
+    /*todo--> out Money <<*/
     
-    /**plus money or minus money by inOrOut param**/
+    /*todo--> plus money or minus money by inOrOut param >>*/
     public void saveTotalMoneyLog(Users users, TotalMoney totalMoney, TransactionalMoneyDto trMDto, TransactionalMoney transactionalMoney, String inOrOut){
         if (inOrOut.equals("in")){
             TotalMoneyLog totalMoneyLog = totalMoneyLogRepository.findByTotalMoneyId(totalMoney.getId());
@@ -419,6 +557,7 @@ public class AppService1 {
             }
         }
     }
+    /*todo--> plus money or minus money by inOrOut param <<*/
 
     private String escapeContent(String content) {
         return content
