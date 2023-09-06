@@ -565,9 +565,16 @@
               "comment" : $('.commentEdit').val(),
             };
           }
+          let title = "";
+          if (type==='POST') {
+            title = " mablag'ini qabul qilishni tasdiqlaysizmi?";
+          }
+          else if (type === 'PUT' || type === 'DELETE') {
+            title = "ga kiritilgan o'zgartirishni tasdiqlaysizmi?"
+          }
 
           Swal.fire({
-            title: params_send_funcV1_01.fullName + " mablag'ini qabul qilishni tasdiqlaysizmi?",
+            title: params_send_funcV1_01.fullName + title,
             showDenyButton: true,
             confirmButtonText: 'Xa',
             denyButtonText: `Yo'q`,
