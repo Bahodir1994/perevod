@@ -62,8 +62,8 @@ public class DataController1 {
         }
         Users users = securedUserData.getSecuredUserParams(userDetails);
 
-        appService1.setData1In(transactionalMoneyDto, users);
-        return new ResponseEntity<>(HttpEntity.EMPTY, HttpStatus.OK);
+        MessageCLassDtoSimple messageCLassDto = appService1.setData1In(transactionalMoneyDto, users);
+        return new ResponseEntity<>(messageCLassDto, HttpStatus.OK);
     }
 
     @PutMapping("/dataV3")
