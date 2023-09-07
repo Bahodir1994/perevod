@@ -14,6 +14,8 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,7 +53,17 @@ public class JobCheckerService {
             return criteriaBuilder.and(predicate1, predicate2);
         };
         Optional<TotalMoney> totalMoney = totalMoneyRepository.findOne(specification);
-        return totalMoney.orElseGet(TotalMoney::new);
+        Map<String, BigDecimal> bigDecimalMap = new HashMap<>();
+        bigDecimalMap.put("totalUzs", BigDecimal.ZERO);
+        bigDecimalMap.put("totalUsd", BigDecimal.ZERO);
+        if (totalMoney.isPresent()){
+            return totalMoney.get();
+        }else {
+            TotalMoney totalMoney1 = new TotalMoney();
+            totalMoney1.setTotalUzs(BigDecimal.ZERO);
+            totalMoney1.setTotalUsd(BigDecimal.ZERO);
+            return totalMoney1;
+        }
     }
 
     /**Get day data if work not start for Admin (status == 0)**/

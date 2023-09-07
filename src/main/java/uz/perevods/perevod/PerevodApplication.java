@@ -6,11 +6,13 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 @Configuration
 @ServletComponentScan
 @SpringBootApplication
+@EnableScheduling
 public class PerevodApplication {
 
     public static void main(String[] args) {
