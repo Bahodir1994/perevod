@@ -406,11 +406,11 @@
                   paramDate = 'qisman';
                 }
                 if (row.paymentCost > row.giveCost && row.giveCost === 0) {
-                  return '<button class="btn btn-sm w-100 btn-outline-warning" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+"'"+row.fullName+"'"+')"><i class="bi bi-geo"></i></button>';
+                  return '<button class="btn btn-sm w-100 btn-outline-warning" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+"'"+row.fullName.replaceAll("'", "`")+"'"+')"><i class="bi bi-geo"></i></button>';
                 }else if (row.paymentCost > row.giveCost && row.giveCost > 0){
                   return '' +
                           '<div class="btn-group w-100">                                                                                                                        '+
-                          '  <button type="button" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+"'"+row.fullName+"'"+')" class="btn btn-sm w-100 btn-outline-success">'+paramDate+'</button>                                                     '+
+                          '  <button type="button" onclick="send_funcV1_02('+"'"+row.id+"'"+', '+row.fullName.replaceAll("'", "`") +')" class="btn btn-sm w-100 btn-outline-success">'+paramDate+'</button>                                                     '+
                           '  <button type="button" class="btn btn-sm w-100  btn-outline-success dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false"> '+
                           '    <span class="visually-hidden">Qo\'shimcha</span>                                                                                            '+
                           '  </button>                                                                                                                                    '+
