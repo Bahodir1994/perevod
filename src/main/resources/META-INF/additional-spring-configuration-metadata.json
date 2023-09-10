@@ -24,5 +24,10 @@
       "name": "astra.api.keyspace",
       "type": "java.lang.String",
       "description": "Description for astra.api.keyspace."
+    },
+    {
+      "name": "bot.token",
+      "type": "java.lang.String",
+      "description": "Description for bot.token."
     }
   ] }

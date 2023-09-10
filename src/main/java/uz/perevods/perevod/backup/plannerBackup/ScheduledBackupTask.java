@@ -14,16 +14,9 @@ public class ScheduledBackupTask {
         this.backupService = backupService;
     }
 
-//    @Scheduled(fixedRate = 30000) // Run every 30 seconds
-//    public void performDatabaseBackup() {
-//        try {
-//            String username = "postgres";
-//            String databaseName = "postgres";
-//            String backupFilePath = "C:\\backup\\DatabaseBackups"; // Windows
-//            backupService.createDatabaseBackup(username, databaseName, backupFilePath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Scheduled(cron = "0 0 3 * * ?") // Run at 3:00 AM every day
+    public void performDatabaseBackup() {
+        backupService.callerFunc();
+    }
 }
 

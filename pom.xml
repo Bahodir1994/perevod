@@ -131,8 +131,23 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.6.2</version>
+        </dependency>
 
 
+        <dependency>
+            <groupId>com.github.kshashov</groupId>
+            <artifactId>spring-boot-starter-telegram</artifactId>
+            <version>0.29</version>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>6.8.0</version> <!-- Проверьте актуальную версию на официальной странице библиотеки -->
+        </dependency>
     </dependencies>
 
     <build>

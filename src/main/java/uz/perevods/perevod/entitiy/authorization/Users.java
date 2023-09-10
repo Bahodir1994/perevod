@@ -42,5 +42,6 @@ public class Users extends AbstractAuditingEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Roles> roles;
+
 }
 
